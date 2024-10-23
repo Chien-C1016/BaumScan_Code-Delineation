@@ -54,10 +54,10 @@ Hence, if images from normal printer scanners are with RGB format, make sure to 
 - Delineation target: Tree Ring Boundaries.  
 
 ## Requirements for computation
-### For TreeRing & Pith:
+### (1) For Tree Rings & Pith:
 - (1) Stem Disc Image (.tif).  
 - (2) Outer Ring Mask (.tif, masked in ImageJ).  
 
-### For Sapwood:
+### (2) For Sapwood:
 - (1) Stem Disc Images with Sapwood pattern (.tif).  
 - (2) Outer Ring Mask (.tif, masked in ImageJ).  
