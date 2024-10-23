@@ -12,7 +12,7 @@ If Fiji is the choice of ImageJ flavor, please cite as:
 
 otherwise, please refers to [ImageJ Docs](https://imagej.net/contribute/citing) for making correct and respectful citations.  
 
-### (2) CLIJ2
+### (2) Plugins: CLIJ2
 It is crucial to activate the ImageJ update sites from **"clij" & "clij2"** as they provide very useful and interactive environments to process the stem images.
 **Please navigate in ImageJ: Help / Update... / ImageJ Updater / Manage update sites**, make sure the boxes of "clij" & "clij2" are ticked, then click "Apply changes".  
 
@@ -28,7 +28,7 @@ The scripts are developed by R (ver. 4.3.1) & RStudio (ver. 2023.09.1+494 "Deser
   for Statistical Computing, Vienna, Austria.
 - RStudio Team (2020). RStudio: Integrated Development for R. RStudio, PBC, Boston, MA URL http://www.rstudio.com/
 
-### (2) Packages
+### (2) Packages: Imager, TSP, dplyr, purrr, OpenImageR
 Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevant referencing as:
 - Barthelme S (2023). _imager: Image Processing Library Based on 'CImg'_. R package version
   0.45.2, <https://CRAN.R-project.org/package=imager>.
