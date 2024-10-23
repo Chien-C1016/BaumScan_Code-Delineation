@@ -1,8 +1,8 @@
 # BaumScan_Code-Delineation
-Delineation of tree ring and sapwood boundaries from various conditions of stem images
+Delineation of tree ring and sapwood boundaries from various conditions of stem images.  
 
 # Description
-The detection codes are demonstrated separately into "CT images" and "Printer Scanner". Their primary codes are the same but with some adjustments based on the image's resolution. Please follow the specific protocol in each folder for more specified info.
+The detection codes are demonstrated separately into "CT images" and "Printer Scanner". Their primary codes are the same but with some adjustments based on the image's resolution. Please follow the specific protocol in each folder for more specified info.  
 
 # Platforms & Required Packages / Plugins
 ## ImageJ  
@@ -43,7 +43,7 @@ Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevan
 
 # Example Imagries Description 
 Please note that the codes are designed for **grayscale images**.  
-Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. However, it is also recommanded to use the predefined option in office printer scanners to generate grayscale images other than color ones.
+Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. However, it is also recommanded to use the predefined option in office printer scanners to generate grayscale images other than color ones.  
 
 ## Scenario 1: Image from CT (Larch under living-condition)
 - Resolution: 150 microns.
