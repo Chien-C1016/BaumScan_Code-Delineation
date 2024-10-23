@@ -53,11 +53,11 @@ Hence, if images from normal printer scanners are with RGB format, make sure to 
 - Resolution: 600 dpi (~42.33 microns).  
 - Delineation target: Tree Ring Boundaries.  
 
-## Requirements for computation
+## Requires images for computations
 ### (1) For Tree Rings & Pith:
-- (1) Stem Disc Image (.tif).  
-- (2) Outer Ring Mask (.tif, masked in ImageJ).  
+- Stem Disc Image (.tif).  
+- Outer Ring Mask (.tif, masked in ImageJ).  
 
 ### (2) For Sapwood:
-- (1) Stem Disc Images with Sapwood pattern (.tif).  
-- (2) Outer Ring Mask (.tif, masked in ImageJ).  
+- Stem Disc Images with Sapwood pattern (.tif).  
+- Outer Ring Mask (.tif, masked in ImageJ).  
