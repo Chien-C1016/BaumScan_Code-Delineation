@@ -75,14 +75,15 @@ It was scanned using a commercial office printer scanner, Canon imageRUNNER ADVA
 # 2. Protocol for Tree Ring Delineations
 **The protocol is in general the same for both CT & Printer Scanned images.**  
 Please follow the instructions below and ensure that the relevant data is prepared in the correct formats.  
-The process is ***semi-automatic*** and requires manual input to define the outermost tree ring structure using ImageJ. For detailed steps, please refer to the steps provided below.  
+The process is ***semi-automatic*** and requires manual input to define the outermost tree ring structure using ImageJ. 
+For detailed steps, please refer to the steps provided below.  
 
-### (01) Delineate the outermost tree ring boundary and create the mask.  
+### (1) Delineate the outermost tree ring boundary and create the mask.  
 - **Import Image:** Drag the targeted Stem Image into ImageJ.  
 - **Create Mask:** Generate the file **"04_OuterRing_Mask.tif"**  
 (Please refer to the **"Protocol for Tree Ring Marking via ImageJ.pdf"** for detailed instructions.)
 
-### (02) Pre-Processing Image by ImageJ.  
+### (2) Pre-Processing Image by ImageJ.  
 - Select the Image opened in the ImageJ, then Navigate to **Plugins / Macros / Run...**
 - Select the **Macro file: "Tree-Ring_Pre-Processing Steps.ijm"**  
 The relevant data inputs for R Scripts will be generated & saved in the same folder as the image opened.  
@@ -94,7 +95,7 @@ The relevant data inputs for R Scripts will be generated & saved in the same fol
 It is recommended to use the interactive parameter adjustments provided by **CLIJ2-Assistant** from CLIJ2 when processing your own image.  
 - Procedure differences between **CT** & **Printer Scanner** images can be found from their **Macro file: "Tree-Ring_Pre-Processing Steps.ijm"** in their folders.  
 
-### (03) Compute tree ring structures and output as "ring_auto.csv".  
+### (3) Compute tree ring structures and output as "ring_auto.csv".  
 - Open RStudio and R  
 - Run Script **"Detection Code.R"**  
 
@@ -104,14 +105,14 @@ It is recommended to use the interactive parameter adjustments provided by **CLI
 The working directory should be the same as the folder containing the input stem image and all processing scripts/macros.  
 - Different parameter adjustments between **CT** & **Printer Scanner** images can be found from their **"Detection Code.R"** in their folders.
 
-### (04) Re-Construct Tree Ring Structures in ImageJ.  
+### (4) Re-Construct Tree Ring Structures in ImageJ.  
 - Open ImageJ with the targeted stem image.  
 - Navigate to **Plugins / Macros / Run...**
 - Select the **Macro file: "R_2_ImageJ.ijm"**.
 - Select the **"ring_auto.csv"** file (Results from R) and construct tree ring structures as ROIs in ROI Manager. 
 
-### (05) Revise R-detected structures interactively using the “Selectin Brush Tool” .  
-In general, in **ImageJ:**  
+### (5) Revise R-detected structures interactively using the “Selectin Brush Tool” .  
+In **ImageJ:**  
 - Continue from Step04,  
 - Select each tree ring structure (**ROI object**) from the **ROI Manager** and review their accuracy.  
 
@@ -125,7 +126,7 @@ When all adjustments are complete for all tree rings (ROIs), **save the updated 
 - The selected ROIs will be saved as a .zip file.
 - To reload the saved ROIs, simply drag the .zip file into ImageJ with the stem image opened.  
 
-### (06) Input updated tree ring structures back into R.  
+### (6) Input updated tree ring structures back into R.  
 In **ImageJ:**  
 - Ensure the stem image is open with tree ring structures (ROIs in ROI Manager).  
 - Navigate to **Plugins / Macros / Run...**  
@@ -147,6 +148,10 @@ If you are performing a **full manual delineation via ImageJ**,
 .  
   
 # 3. Protocol for Sapwood Delineations
+**The protocol is ONLY designed for CT images.**  
+Please follow the instructions below and ensure that the relevant data is prepared in the correct formats.  
+The process is ***semi-automatic*** and requires manual input to define the outermost tree ring structure using ImageJ. 
+For detailed steps, please refer to the steps provided below.  
 
 
 
