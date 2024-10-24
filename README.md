@@ -162,6 +162,8 @@ For detailed steps, please refer to the steps provided below.
 **Note:**  
 - If the outermost tree ring boundary was already defined during the tree ring delineation, simply skip **Create Mask:** step. Instead,
 - Import the created Outer-Ring Mask.
+- This Outer-Ring Mask will be considered as the **"Outer Boundary"** of the sapwood.
+  (Further development might be possible to delineate the Outer Boundary from the Macro results...)
 
 ### Step 2: Capture Sawpood Structure by ImageJ.  
 - Select the Image opened in the ImageJ, then Navigate to **Plugins / Macros / Run...**
