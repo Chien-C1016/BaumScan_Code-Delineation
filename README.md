@@ -49,7 +49,7 @@ Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevan
 Please note that the codes are designed for **grayscale images**.  
 Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. However, it is also recommanded to use the predefined option in office printer scanners to generate grayscale images other than color ones.  
 
-## Scenario 1: Image from CT (Larch under living-condition)
+## Scenario 1: Image from CT (Larch under Living Condition)
 The image in this scenario comes from a larch stem disc, preserved and scanned using a stationary CT scanner with custom-tailored settings immediately after it was harvested from the forest. 
 These settings were specifically designed and tested on the disc to support the development of the mobile CT (mCT) system, which will be implemented in the forest during future project phases.  
 
