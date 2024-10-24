@@ -59,7 +59,7 @@ These settings were specifically designed and tested on the disc to support the 
 - **Image Name:** La-01.tif  
 - **Location: Folder: "CT Images"**.
 - Species: Larch.
-- Stem Disc Condition: Living Condition.
+- Stem Disc Condition: Close-to-Living Condition.
 - Resolution in Dimention: 150 microns.
 - Resolution in Depth: 32 bit.
 - Delineation target: Tree Ring Boundaries + Sapwood Boundary  
