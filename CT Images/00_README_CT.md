@@ -82,6 +82,11 @@ In **R & RStudio:**
 - Run the code in this section.  
 The lines are to translate the **CSV** file from ImageJ to R.  
 Ensure the targeted stem image is also imported into R as "im" in matrix format.  
-The imported structure can be a data frame or a list that includes both a **data frame** and a **CImage object**.
+The imported structure can be a data frame or a list that includes both a **data frame** and a **CImage object**.  
 
-
+**Note:**  
+If you are performing a **full manual delineation via ImageJ**,  
+- **In ImageJ,** follow the instructions above to save the structure, and name the **.zip** file as **"Results.csv"**.  
+- **In R & RStudio:** open **"Detection Code.R"**, and navigate to **section [2]-(5)_Import Manual Ring Positions (Optional)**.
+  
+  
