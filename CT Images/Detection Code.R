@@ -314,6 +314,8 @@ ring.rev.list <- segment.Morph.Search(ring.segments = ring.ReSample.rev,
                                       ReSample.Size = ReSample.Size,
                                       sapw.control  = sapw.control)
 
+
+
 ## (2)_Structure Adjustments ----
 #'[Structure Adjustments]
 ring.auto <-
@@ -336,6 +338,8 @@ if(.plotcheck == TRUE){
   imager::highlight(im.result > 0)
 }
 
+
+
 ## (3)_Output for Validation in "ImageJ" ----
 # Export to ImageJ
 #'@note 
@@ -347,6 +351,8 @@ if(.plotcheck == TRUE){
 #' the results can be imported back to R.
 ring.ijm <- R2IJ(ring.auto, im.matrix = cim)
 write.csv(ring.ijm, file = "ring_auto.csv", row.names = F)
+
+
 
 ## (4)_Import Adjusted structures ----
 #'@note
@@ -366,6 +372,8 @@ im.result <-
   ring.MatrixBuild(im.ref  = cim, 
                    ring.df = .) %>% 
   imager::as.cimg()
+
+
 
 ## (5)_Import Manual Ring Positions (Optional) ----
 #'[Import Manual Ring Positions]
@@ -388,3 +396,23 @@ if(.plotcheck == TRUE){
   plot(cim)
   imager::highlight(im.manual > 0)
 }
+
+
+
+## (6)_Import Sapwood Structures ----
+sw.data <- read.csv("Results_SWAuto.csv")
+sw.auto <-
+  sw.data %>% 
+  # In case all SW ROIs were extracted by "ExtractROICoordinate.ijm"
+  dplyr::filter(Label == "Inner Boundary") %>%
+  Ij2R(., im.matrix = .y)
+
+
+
+## (7)_Import Manual Sapwood Positions (Optional) ----
+sw.manual.data <- read.csv("Results_SW.csv")
+sw.manual <-
+  sw.manual.data %>% 
+  Ij2R(., im.matrix = .y)
+
+
