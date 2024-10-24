@@ -71,11 +71,17 @@ When all adjustments are complete for all tree rings (ROIs), **save the updated 
 ## Step06 (Optional)
 **Aim:** Input updated tree ring structures back into R.  
 
-- Ensure **ImageJ** is open with the stem image and tree ring structures (ROIs in ROI Manager).  
+In **ImageJ:**  
+- Ensure the stem image is open with tree ring structures (ROIs in ROI Manager).  
 - Navigate to **Plugins / Macros / Run...**  
 - Select the **Macro file: "ExtractROICoordinate.ijm"**  
 - **Save** the pop-up table as **"Results.csv"**  
 
-In R-Script, **"Detection Code.R"**, in **section [2]-(5)**,
-there are supporting code lines to translate the **CSV** file from ImageJ to R.  
-Make sure to also import the targeted stem image into R as "im" in matrix format.  
+In **R & RStudio:**  
+- Open R-Script: **"Detection Code.R"**, and navigate to **section [2]-(5)**.  
+- Run the code in this section.  
+The lines are to translate the **CSV** file from ImageJ to R.  
+Ensure the targeted stem image is also imported into R as "im" in matrix format.  
+The imported structure can be a data frame or a list that includes both a **data frame** and a **CImage object**.
+
+
