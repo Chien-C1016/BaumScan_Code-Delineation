@@ -1,6 +1,6 @@
-# Protocol for Processing CT Image
+# Protocol for Processing Printer Scanned Image
 
-**This protocol is designed specifically for CT images.**  
+**This protocol is designed specifically for Printer Scanned images.**  
 Please follow the instructions below and ensure that the relevant data is prepared in the correct formats.  
 The process is ***semi-automatic*** and requires manual input to define the outermost tree ring structure using ImageJ. For detailed steps, please refer to the protocol provided below.  
 
