@@ -10,7 +10,7 @@ The following sections provide an overview of the software, plugins, packages, a
   
 .  
   
-# 1. Platforms & Required Packages / Plugins
+# 1. Requirements
 ## ImageJ  
 ### (1) Fiji
 If Fiji is the choice of ImageJ flavor, please cite as:  
@@ -45,46 +45,44 @@ Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevan
 - Wickham H, Henry L (2023). _purrr: Functional Programming Tools_. R package version 1.0.1,
   <https://CRAN.R-project.org/package=purrr>.
 - Mouselimis L (2023). _OpenImageR: An Image Processing Toolkit_. R package version 1.3.0,
-  <https://CRAN.R-project.org/package=OpenImageR>.  
+  <https://CRAN.R-project.org/package=OpenImageR>.   
   
-.  
-  
-# 2. Example Imagries
+## Example Imagries
 Please note that the codes are designed for **grayscale images**.  
 Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. 
 However, it is also recommanded to use the predefined option in office printer scanners to generate grayscale images other than color ones.  
 
-### Folder 1: Image from CT (Larch under Living Condition)
+### (1) Image from CT (Larch under Living Condition)
 The image in this scenario comes from a larch stem disc, preserved and scanned using a stationary CT scanner with custom-tailored settings immediately after it was harvested from the forest. 
 These settings were specifically designed and tested on the disc to support the development of the mobile CT (mCT) system, which will be implemented in the forest during future project phases.  
 
 - **Image Name:** La-01.tif  
+- **Location: Folder: "CT Images"**.  
 - Resolution: 150 microns.  
 - Delineation target: Tree Ring Boundaries + Sapwood Boundary  
 
-### Folder 2: Image from Printer Scanner (Spruce under Air-Dry-Condition)
+### (2) Image from Printer Scanner (Spruce under Air-Dry-Condition)
 The image used in this scenario comes from a spruce stem disc that was sanded and prepared for standard dendrochronological analysis. 
 It was scanned using a commercial office printer scanner, Canon imageRUNNER ADVANCE C3561, set to a resolution of 600 dpi in grayscale.  
 
-- **Image Name:** Fi_04.tif  
+- **Image Name:** Fi_04.tif
+- **Location: Folder: "Printer Scanner"**.  
 - Resolution: 600 dpi (~42.33 microns).  
 - Delineation target: Tree Ring Boundaries.  
   
 .   
   
-# 3. Protocol for Tree Ring Delineations
+# 2. Protocol for Tree Ring Delineations
 **The protocol is in general the same for both CT & Printer Scanned images.**  
 Please follow the instructions below and ensure that the relevant data is prepared in the correct formats.  
 The process is ***semi-automatic*** and requires manual input to define the outermost tree ring structure using ImageJ. For detailed steps, please refer to the steps provided below.  
 
-### Step01
-**Aim:** Delineate the outermost tree ring boundary and create the mask.  
+### (01) Delineate the outermost tree ring boundary and create the mask.  
 - **Import Image:** Drag the targeted Stem Image into ImageJ.  
 - **Create Mask:** Generate the file **"04_OuterRing_Mask.tif"**  
 (Please refer to the **"Protocol for Tree Ring Marking via ImageJ.pdf"** for detailed instructions.)
 
-### Step02
-**Aim:** Pre-Processing Image by ImageJ.  
+### (02) Pre-Processing Image by ImageJ.  
 - Select the Image opened in the ImageJ, then Navigate to **Plugins / Macros / Run...**
 - Select the **Macro file: "Tree-Ring_Pre-Processing Steps.ijm"**  
 The relevant data inputs for R Scripts will be generated & saved in the same folder as the image opened.  
@@ -96,8 +94,7 @@ The relevant data inputs for R Scripts will be generated & saved in the same fol
 It is recommended to use the interactive parameter adjustments provided by **CLIJ2-Assistant** from CLIJ2 when processing your own image.  
 - Procedure differences between **CT** & **Printer Scanner** images can be found from their **Macro file: "Tree-Ring_Pre-Processing Steps.ijm"** in their folders.  
 
-### Step03
-**Aim:** Compute tree ring structures and output as "ring_auto.csv".  
+### (03) Compute tree ring structures and output as "ring_auto.csv".  
 - Open RStudio and R  
 - Run Script **"Detection Code.R"**  
 
@@ -107,15 +104,13 @@ It is recommended to use the interactive parameter adjustments provided by **CLI
 The working directory should be the same as the folder containing the input stem image and all processing scripts/macros.  
 - Different parameter adjustments between **CT** & **Printer Scanner** images can be found from their **"Detection Code.R"** in their folders.
 
-### Step04
-**Aim:** Re-Construct Tree Ring Structures in ImageJ.  
+### (04) Re-Construct Tree Ring Structures in ImageJ.  
 - Open ImageJ with the targeted stem image.  
 - Navigate to **Plugins / Macros / Run...**
 - Select the **Macro file: "R_2_ImageJ.ijm"**.
 - Select the **"ring_auto.csv"** file (Results from R) and construct tree ring structures as ROIs in ROI Manager. 
 
-### Step05
-**Aim**: Revise R-detected structures interactively using the “Selectin Brush Tool” .  
+### (05) Revise R-detected structures interactively using the “Selectin Brush Tool” .  
 In general, in **ImageJ:**  
 - Continue from Step04,  
 - Select each tree ring structure (**ROI object**) from the **ROI Manager** and review their accuracy.  
@@ -130,8 +125,7 @@ When all adjustments are complete for all tree rings (ROIs), **save the updated 
 - The selected ROIs will be saved as a .zip file.
 - To reload the saved ROIs, simply drag the .zip file into ImageJ with the stem image opened.  
 
-### Step06 (Optional)
-**Aim:** Input updated tree ring structures back into R.  
+### (06) Input updated tree ring structures back into R.  
 In **ImageJ:**  
 - Ensure the stem image is open with tree ring structures (ROIs in ROI Manager).  
 - Navigate to **Plugins / Macros / Run...**  
@@ -152,7 +146,7 @@ If you are performing a **full manual delineation via ImageJ**,
   
 .  
   
-# 4. Protocol for Sapwood Delineations
+# 3. Protocol for Sapwood Delineations
 
 
 
