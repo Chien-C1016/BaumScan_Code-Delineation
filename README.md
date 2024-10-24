@@ -7,8 +7,8 @@ To capture the internal structures of tree stems for nondestructive analysis, we
 The detection codes are demonstrated using images from both "CT" and "Printer Scanner" sources. While the core code remains the same, some parameters are adjusted to account for differences in image resolution and condition (fresh versus air-dried samples). For specific details, please refer to the protocols in each folder.  
 
 The following sections provide an overview of the software, plugins, packages, and image types used in this stem feature delineation project.  
-
-
+  
+  
 # 1. Platforms & Required Packages / Plugins
 ## ImageJ  
 ### (1) Fiji
@@ -45,8 +45,8 @@ Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevan
   <https://CRAN.R-project.org/package=purrr>.
 - Mouselimis L (2023). _OpenImageR: An Image Processing Toolkit_. R package version 1.3.0,
   <https://CRAN.R-project.org/package=OpenImageR>.  
-
-
+  
+  
 # 2. Example Imagries
 Please note that the codes are designed for **grayscale images**.  
 Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. 
@@ -76,8 +76,8 @@ It was scanned using a commercial office printer scanner, Canon imageRUNNER ADVA
 ### (2) For Sapwood:
 - Stem Disc Images with Sapwood pattern (.tif).  
 - Outer Ring Mask (.tif, masked in ImageJ).  
-
-
+  
+  
 # 3. Protocol for Tree Ring Delineations
 **The protocol is in general the same for both CT & Printer Scanned images.**  
 Please follow the instructions below and ensure that the relevant data is prepared in the correct formats.  
