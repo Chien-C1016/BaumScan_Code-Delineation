@@ -45,7 +45,7 @@ Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevan
 - Mouselimis L (2023). _OpenImageR: An Image Processing Toolkit_. R package version 1.3.0,
   <https://CRAN.R-project.org/package=OpenImageR>.  
 
-# 2. Example Imagries Description 
+# 2. Example Imagries
 Please note that the codes are designed for **grayscale images**.  
 Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. However, it is also recommanded to use the predefined option in office printer scanners to generate grayscale images other than color ones.  
 
