@@ -54,32 +54,23 @@ Please note that the codes are designed for **grayscale images**.
 Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. 
 However, it is also recommanded to use the predefined option in office printer scanners to generate grayscale images other than color ones.  
 
-## Folder 1: Image from CT (Larch under Living Condition)
+### Folder 1: Image from CT (Larch under Living Condition)
 The image in this scenario comes from a larch stem disc, preserved and scanned using a stationary CT scanner with custom-tailored settings immediately after it was harvested from the forest. 
 These settings were specifically designed and tested on the disc to support the development of the mobile CT (mCT) system, which will be implemented in the forest during future project phases.  
 
-- **Name:** La-01.tif  
+- **Image Name:** La-01.tif  
 - Resolution: 150 microns.  
 - Delineation target: Tree Ring Boundaries + Sapwood Boundary  
 
-## Folder 2: Image from Printer Scanner (Spruce under Air-Dry-Condition)
+### Folder 2: Image from Printer Scanner (Spruce under Air-Dry-Condition)
 The image used in this scenario comes from a spruce stem disc that was sanded and prepared for standard dendrochronological analysis. 
 It was scanned using a commercial office printer scanner, Canon imageRUNNER ADVANCE C3561, set to a resolution of 600 dpi in grayscale.  
 
-- **Name:** Fi_04.tif  
+- **Image Name:** Fi_04.tif  
 - Resolution: 600 dpi (~42.33 microns).  
 - Delineation target: Tree Ring Boundaries.  
-
-## Images Required for computations
-### (1) For Tree Rings & Pith:
-- Stem Disc Image (.tif).  
-- Outer Ring Mask (.tif, masked in ImageJ).  
-
-### (2) For Sapwood:
-- Stem Disc Images with Sapwood pattern (.tif).  
-- Outer Ring Mask (.tif, masked in ImageJ).  
-
-.  
+  
+.   
   
 # 3. Protocol for Tree Ring Delineations
 **The protocol is in general the same for both CT & Printer Scanned images.**  
