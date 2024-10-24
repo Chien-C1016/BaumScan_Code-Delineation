@@ -1,16 +1,20 @@
 # BaumScan_Code-Delineation
-Delineation of tree ring and sapwood boundaries from various conditions of stem images.  
 
-# Description
-The detection codes are demonstrated separately into "CT images" and "Printer Scanner". Their primary codes are the same but with some adjustments based on the image's resolution. Please follow the specific protocol in each folder for more specified info.  
+**In Brief:** Delineation of tree ring and sapwood boundaries from various conditions of stem images.  
 
-# Platforms & Required Packages / Plugins
+To capture the internal structures of tree stems for nondestructive analysis, we have developed delineation codes and protocols. Since images obtained from computed tomography (CT) scans share similarities with those from standard printer scanners in terms of patterns, colors, and data formats, we tested the applicability of our delineation procedures on common image data from stem discs.  
+
+The detection codes are demonstrated using images from both "CT" and "Printer Scanner" sources. While the core code remains the same, some parameters are adjusted to account for differences in image resolution and condition (fresh versus air-dried samples). For specific details, please refer to the protocols in each folder.  
+
+The following sections provide an overview of the software, plugins, packages, and image types used in this stem feature delineation project.  
+
+# 1. Platforms & Required Packages / Plugins
 ## ImageJ  
 ### (1) Fiji
 If Fiji is the choice of ImageJ flavor, please cite as:  
 - Schindelin, J., Arganda-Carreras, I., Frise, E. et al. Fiji: an open-source platform for biological-image analysis. Nat Methods 9, 676–682 (2012). https://doi.org/10.1038/nmeth.2019  
 
-otherwise, please refers to [ImageJ Docs](https://imagej.net/contribute/citing) for making correct and respectful citations.  
+otherwise, please refer to [ImageJ Docs](https://imagej.net/contribute/citing) for making correct and respectful citations.  
 
 ### (2) Plugins: CLIJ2
 It is crucial to activate the ImageJ update sites from **"clij" & "clij2"** as they provide very useful and interactive environments to process the stem images.
@@ -41,7 +45,7 @@ Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevan
 - Mouselimis L (2023). _OpenImageR: An Image Processing Toolkit_. R package version 1.3.0,
   <https://CRAN.R-project.org/package=OpenImageR>.  
 
-# Example Imagries Description 
+# 2. Example Imagries Description 
 Please note that the codes are designed for **grayscale images**.  
 Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. However, it is also recommanded to use the predefined option in office printer scanners to generate grayscale images other than color ones.  
 
