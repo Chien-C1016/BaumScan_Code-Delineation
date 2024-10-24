@@ -75,10 +75,10 @@ In **ImageJ:**
 - Ensure the stem image is open with tree ring structures (ROIs in ROI Manager).  
 - Navigate to **Plugins / Macros / Run...**  
 - Select the **Macro file: "ExtractROICoordinate.ijm"**  
-- **Save** the pop-up table as **"Results.csv"**  
+- **Save** the pop-up table as **"Results_Auto.csv"**  
 
 In **R & RStudio:**  
-- Open R-Script: **"Detection Code.R"**, and navigate to **section [2]-(5)**.  
+- Open R-Script: **"Detection Code.R"**, and navigate to **section [2]-(4)_Import Adjusted structures**.  
 - Run the code in this section.  
 The lines are to translate the **CSV** file from ImageJ to R.  
 Ensure the targeted stem image is also imported into R as "im" in matrix format.  
