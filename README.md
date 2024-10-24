@@ -8,6 +8,7 @@ The detection codes are demonstrated using images from both "CT" and "Printer Sc
 
 The following sections provide an overview of the software, plugins, packages, and image types used in this stem feature delineation project.  
   
+.  
   
 # 1. Platforms & Required Packages / Plugins
 ## ImageJ  
@@ -46,6 +47,7 @@ Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevan
 - Mouselimis L (2023). _OpenImageR: An Image Processing Toolkit_. R package version 1.3.0,
   <https://CRAN.R-project.org/package=OpenImageR>.  
   
+.  
   
 # 2. Example Imagries
 Please note that the codes are designed for **grayscale images**.  
@@ -76,20 +78,21 @@ It was scanned using a commercial office printer scanner, Canon imageRUNNER ADVA
 ### (2) For Sapwood:
 - Stem Disc Images with Sapwood pattern (.tif).  
 - Outer Ring Mask (.tif, masked in ImageJ).  
-  
+
+.  
   
 # 3. Protocol for Tree Ring Delineations
 **The protocol is in general the same for both CT & Printer Scanned images.**  
 Please follow the instructions below and ensure that the relevant data is prepared in the correct formats.  
 The process is ***semi-automatic*** and requires manual input to define the outermost tree ring structure using ImageJ. For detailed steps, please refer to the steps provided below.  
 
-## Step01
+### Step01
 **Aim:** Delineate the outermost tree ring boundary and create the mask.  
 - **Import Image:** Drag the targeted Stem Image into ImageJ.  
 - **Create Mask:** Generate the file **"04_OuterRing_Mask.tif"**  
 (Please refer to the **"Protocol for Tree Ring Marking via ImageJ.pdf"** for detailed instructions.)
 
-## Step02
+### Step02
 **Aim:** Pre-Processing Image by ImageJ.  
 - Select the Image opened in the ImageJ, then Navigate to **Plugins / Macros / Run...**
 - Select the **Macro file: "Tree-Ring_Pre-Processing Steps.ijm"**  
@@ -101,7 +104,7 @@ The relevant data inputs for R Scripts will be generated & saved in the same fol
 - You can edit specific parameters by navigating to **Plugins / Macros / Edit...**, then selecting the **Macro file: "Tree-Ring_Pre-Processing Steps.ijm"**.  
 It is recommended to use the interactive parameter adjustments provided by **CLIJ2-Assistant** from CLIJ2 when processing your own image.  
 
-## Step03
+### Step03
 **Aim:** Compute tree ring structures and output as "ring_auto.csv".  
 - Open RStudio and R  
 - Run Script **"Detection Code.R"**  
@@ -111,14 +114,14 @@ It is recommended to use the interactive parameter adjustments provided by **CLI
 - Please **adjust the R script to match your personal working directory**.  
 The working directory should be the same as the folder containing the input stem image and all processing scripts/macros.  
 
-## Step04
+### Step04
 **Aim:** Re-Construct Tree Ring Structures in ImageJ.  
 - Open ImageJ with the targeted stem image.  
 - Navigate to **Plugins / Macros / Run...**
 - Select the **Macro file: "R_2_ImageJ.ijm"**.
 - Select the **"ring_auto.csv"** file (Results from R) and construct tree ring structures as ROIs in ROI Manager. 
 
-## Step05
+### Step05
 **Aim**: Revise R-detected structures interactively using the “Selectin Brush Tool” .  
 In general, in **ImageJ:**  
 - Continue from Step04,  
@@ -134,7 +137,7 @@ When all adjustments are complete for all tree rings (ROIs), **save the updated 
 - The selected ROIs will be saved as a .zip file.
 - To reload the saved ROIs, simply drag the .zip file into ImageJ with the stem image opened.  
 
-## Step06 (Optional)
+### Step06 (Optional)
 **Aim:** Input updated tree ring structures back into R.  
 In **ImageJ:**  
 - Ensure the stem image is open with tree ring structures (ROIs in ROI Manager).  
