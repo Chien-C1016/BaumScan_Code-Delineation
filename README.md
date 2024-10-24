@@ -128,7 +128,8 @@ When all adjustments are complete for all tree rings (ROIs), **save the updated 
 
 ### Step 6: Input updated tree ring structures back into R.  
 In **ImageJ:**  
-- Ensure the stem image is open with tree ring structures (ROIs in ROI Manager).  
+- Ensure the stem image is open with tree ring structures (ROIs in ROI Manager).
+- Navigate to **ROI Manager /** Select all ROIs in ROI Manager   
 - Navigate to **Plugins / Macros / Run...**  
 - Select the **Macro file: "ExtractROICoordinate.ijm"**  
 - **Save** the pop-up table as **"Results_Auto.csv"**  
@@ -138,7 +139,7 @@ In **R & RStudio:**
 - Run the code in this section.  
 The lines are to translate the **CSV** file from ImageJ to R.  
 Ensure the targeted stem image is also imported into R as "im" in matrix format.  
-The imported structure can be a data frame or a list that includes both a **data frame** and a **CImage object**.  
+The exported structure in R will be either a data frame or a list that includes both a **data frame** and a **CImage object**.    
 
 **Note:**  
 If you are performing a **full manual delineation via ImageJ**,  
@@ -159,7 +160,8 @@ For detailed steps, please refer to the steps provided below.
 (Please refer to the **"Protocol for Tree Ring Marking via ImageJ.pdf"** for detailed instructions.)
 
 **Note:**  
-- If the outermost tree ring boundary was already defined during the tree ring delineation, simply skip this step.  
+- If the outermost tree ring boundary was already defined during the tree ring delineation, simply skip **Create Mask:** step. Instead,
+- Import the created Outer-Ring Mask.
 
 ### Step 2: Capture Sawpood Structure by ImageJ.  
 - Select the Image opened in the ImageJ, then Navigate to **Plugins / Macros / Run...**
@@ -167,10 +169,45 @@ For detailed steps, please refer to the steps provided below.
 The relevant sapwood structure will be created & saved in the same folder as the image opened.  
 
 **Note:**  
-- 
+- Two types of results will be saved: **Sapwood Image in TIFF** & **Sapwood RoiSet.zip**.
+- In **Sapwood RoiSet.zip**, please ***ONLY** make use of **"Inner Boundary"**.  
+(The Outer Boundary is saved for further development opportunity to automate the delineation of the outermost Tree Ring.)  
 
+### Step 3: Revise Sapwood Structures Interactively using the “Selectin Brush Tool” .  
+- Select **ROI object:** "Inner Boundary" from the **ROI Manager** and review their accuracy.  
 
+For any wrong delineations,  
+- Select the ROI with mistakes.  
+- Use the **“Selectin Brush Tool”** to adjust the results.  
+- After making corrections, navigate to **ROI Manager / Update** to save the changes.  
 
+When all adjustments are complete, **save the updated ROI object by:**  
+- Navigate to **ROI Manager /** Select **ROI object:** "Inner Boundary" **/ More >> / Save...**
+- The selected ROI will be saved as a .roi file.
+- To reload the saved ROI Object, simply drag the .roi file into ImageJ with the stem image opened.  
+
+### Step 4: Input Updated Sapwood Inner Boundary Structure into R.  
+In **ImageJ:**  
+- Ensure the stem image is open with "updated" sapwood structures (ROIs in ROI Manager).
+- Navigate to **ROI Manager /** Select **ROI object:** "Inner Boundary" **
+- Navigate to **Plugins / Macros / Run...**  
+- Select the **Macro file: "ExtractROICoordinate.ijm"**  
+- **Save** the pop-up table as **"Results_Auto.csv"**  
+
+In **R & RStudio:**  
+- Open R-Script: **"Detection Code.R"**, and navigate to **section [2]-(6)_Import Sapwood Structures**.  
+- Run the code in this section.  
+The lines are to translate the **CSV** file from ImageJ to R.  
+Ensure the targeted stem image is also imported into R as "im" in matrix format.  
+The exported structure in R will be either a data frame or a list that includes both a **data frame** and a **CImage object**.  
+
+**Note:**  
+If you are performing a **full manual delineation via ImageJ**,  
+- **In ImageJ,** follow the instructions above to save the structure, and name the **.zip** file as **"Results.csv"**.  
+- **In R & RStudio:** open **"Detection Code.R"**, and navigate to **section [2]-(7)_Import Manual Sapwood Positions (Optional)**.  
+  
+.  
+  
 
 
 
