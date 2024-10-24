@@ -33,7 +33,7 @@ The relevant data inputs for R Scripts will be generated & saved in the same fol
 It is recommended to use the interactive parameter adjustments provided by **CLIJ2-Assistant** from CLIJ2 when processing your own image.  
 
 ## Step03
-**Aim:** Run R scripts for computing tree ring structures and generate "ring_auto.csv".  
+**Aim:** Compute tree ring structures and output as "ring_auto.csv".  
 
 - Open RStudio and R  
 - Run Script **"Detection Code.R"**  
@@ -44,27 +44,38 @@ It is recommended to use the interactive parameter adjustments provided by **CLI
 The working directory should be the same as the folder containing the input stem image and all processing scripts/macros.  
 
 ## Step04
-**Aim:** 
-#' Open ImageJ with the targeted stem image.
-#' Run Macro to input tree ring structures as ROI files into ROI Manager.
-#' Navigate to Plugins / Macros / Run...
-#' Select the Macro file: "R_2_ImageJ.ijm".  
+**Aim:** Re-Construct Tree Ring Structures in ImageJ.  
 
-#'[Step06]
-#' Use the interactive platform from ImageJ,
-#' Select each tree ring structure from ROI Manager and 
-#' check their structures accordingly. For any wrong delineation, 
-#' use “Selectin Brush Tool” to adjust the R-detected results:
-#' Select the ROI with mistakes / use “Selectin Brush Tool” for adjustments / 
-#' ROI Manager / Update
-#' Save the Updated ROI objects by:
-#' ROI Manager / Select all ROIs of tree rings / More >> / Save...
-#'[Step07] (Optional)
-#' In case the updated tree ring structure data is needed back into R,
-#' Navigate to Plugins / Macros / Run...
-#' Select the Macro file: "ExtractROICoordinate.ijm"
-#' Save the pop-up table as "Results.csv",
-#' In R-Script "Detection Code.R", section [2]-(5),
-#' There is supportive lines to translate the csv file from ImageJ to R.
-#' Remember to also import the targeted Image into R as "im" as matrix format.
-# ---------------------------------------------------------------------------- #
+- Open ImageJ with the targeted stem image.  
+- Navigate to **Plugins / Macros / Run...**
+- Select the **Macro file: "R_2_ImageJ.ijm"**.
+- Select the **"ring_auto.csv"** file (Results from R) and construct tree ring structures as ROIs in ROI Manager. 
+
+## Step05
+**Aim**: Revise R-detected structures interactively using the “Selectin Brush Tool” .  
+
+In general, in **ImageJ:**  
+- Continue from Step04,  
+- Select each tree ring structure (**ROI object**) from the **ROI Manager** and review their accuracy.  
+
+For any wrong delineations,  
+- Select the ROI with mistakes.  
+- Use the **“Selectin Brush Tool”** to adjust the R-detected results.  
+- After making corrections, navigate to **ROI Manager / Update** to save the changes.  
+
+When all adjustments are complete for all tree rings (ROIs), **save the updated ROI objects by:**  
+- Navigate to **ROI Manager /** Select all ROIs in ROI Manager **/ More >> / Save...**
+- The selected ROIs will be saved as a .zip file.
+- To reload the saved ROIs, simply drag the .zip file into ImageJ with the stem image opened.  
+
+## Step06 (Optional)
+**Aim:** Input updated tree ring structures back into R.  
+
+- Ensure **ImageJ** is open with the stem image and tree ring structures (ROIs in ROI Manager).  
+- Navigate to **Plugins / Macros / Run...**  
+- Select the **Macro file: "ExtractROICoordinate.ijm"**  
+- **Save** the pop-up table as **"Results.csv"**  
+
+In R-Script, **"Detection Code.R"**, in **section [2]-(5)**,
+there are supporting code lines to translate the **CSV** file from ImageJ to R.  
+Make sure to also import the targeted stem image into R as "im" in matrix format.  
