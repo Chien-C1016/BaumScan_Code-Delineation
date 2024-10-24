@@ -54,7 +54,7 @@ However, it is also recommanded to use the predefined option in office printer s
 
 ### (1) Image from CT (Larch under Living Condition)
 The image in this scenario comes from a larch stem disc, preserved and scanned using a stationary CT scanner with custom-tailored settings immediately after it was harvested from the forest. 
-These settings were specifically designed and tested on the disc to support the development of the mobile CT (mCT) system, which will be implemented in the forest during future project phases.  
+These settings were specifically designed and tested on the disc to support the development of the **mobile CT (mCT) system**, which will be implemented in the forest during future project phases.  
 
 - **Image Name:** La-01.tif  
 - **Location: Folder: "CT Images"**.  
@@ -63,7 +63,7 @@ These settings were specifically designed and tested on the disc to support the 
 
 ### (2) Image from Printer Scanner (Spruce under Air-Dry-Condition)
 The image used in this scenario comes from a spruce stem disc that was sanded and prepared for standard dendrochronological analysis. 
-It was scanned using a commercial office printer scanner, Canon imageRUNNER ADVANCE C3561, set to a resolution of 600 dpi in grayscale.  
+It was scanned using a **commercial office printer scanner**, Canon imageRUNNER ADVANCE C3561, set to a resolution of 600 dpi in grayscale.  
 
 - **Image Name:** Fi_04.tif
 - **Location: Folder: "Printer Scanner"**.  
