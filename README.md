@@ -78,7 +78,7 @@ It was scanned using a commercial office printer scanner, Canon imageRUNNER ADVA
 - Outer Ring Mask (.tif, masked in ImageJ).  
 
 
-# 3. Protocol for Feature Delineations
+# 3. Protocol for Tree Ring Delineations
 **The protocol is in general the same for both CT & Printer Scanned images.**  
 Please follow the instructions below and ensure that the relevant data is prepared in the correct formats.  
 The process is ***semi-automatic*** and requires manual input to define the outermost tree ring structure using ImageJ. For detailed steps, please refer to the steps provided below.  
