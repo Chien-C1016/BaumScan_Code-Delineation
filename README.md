@@ -60,7 +60,8 @@ These settings were specifically designed and tested on the disc to support the 
 - **Location: Folder: "CT Images"**.
 - Species: Larch.
 - Stem Disc Condition: Living Condition.
-- Resolution: 150 microns.  
+- Resolution in Dimention: 150 microns.
+- Resolution in Depth: 32 bit.
 - Delineation target: Tree Ring Boundaries + Sapwood Boundary  
 
 ### (2) Image from Printer Scanner
@@ -71,7 +72,8 @@ It was scanned using a **commercial office printer scanner**, Canon imageRUNNER 
 - **Location: Folder: "Printer Scanner"**.
 - Species: Spruce.
 - Stem Disc Condition: Air-Dry-Condition.
-- Resolution: 600 dpi (~42.33 microns).  
+- Resolution in Dimention: 600 dpi (~42.33 microns).
+- Resolution in Depth: 8 bit.
 - Delineation target: Tree Ring Boundaries.  
   
 .   
