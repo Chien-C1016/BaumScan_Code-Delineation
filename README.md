@@ -153,6 +153,21 @@ Please follow the instructions below and ensure that the relevant data is prepar
 The process is ***semi-automatic*** and requires manual input to define the outermost tree ring structure using ImageJ. 
 For detailed steps, please refer to the steps provided below.  
 
+### Step 1: Delineate the outermost tree ring boundary and create the mask.  
+- **Import Image:** Drag the targeted Stem Image into ImageJ.    
+- **Create Mask:** Generate the file **"04_OuterRing_Mask.tif"**  
+(Please refer to the **"Protocol for Tree Ring Marking via ImageJ.pdf"** for detailed instructions.)
+
+**Note:**  
+- If the outermost tree ring boundary was already defined during the tree ring delineation, simply skip this step.  
+
+### Step 2: Capture Sawpood Structure by ImageJ.  
+- Select the Image opened in the ImageJ, then Navigate to **Plugins / Macros / Run...**
+- Select the **Macro file: "Sapwood Structure Capture.ijm"**  
+The relevant sapwood structure will be created & saved in the same folder as the image opened.  
+
+**Note:**  
+- 
 
 
 
