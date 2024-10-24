@@ -200,7 +200,7 @@ In **ImageJ:**
 - Navigate to **ROI Manager /** Select **ROI object:** "Inner Boundary" **
 - Navigate to **Plugins / Macros / Run...**  
 - Select the **Macro file: "ExtractROICoordinate.ijm"**  
-- **Save** the pop-up table as **"Results_Auto.csv"**  
+- **Save** the pop-up table as **"Results_SWAuto.csv"**  
 
 In **R & RStudio:**  
 - Open R-Script: **"Detection Code.R"**, and navigate to **section [2]-(6)_Import Sapwood Structures**.  
@@ -211,7 +211,7 @@ The exported structure in R will be either a data frame or a list that includes 
 
 **Note:**  
 If you are performing a **full manual delineation via ImageJ**,  
-- **In ImageJ,** follow the instructions above to save the structure, and name the **.zip** file as **"Results.csv"**.  
+- **In ImageJ,** follow the instructions above to save the structure, and name the **.zip** file as **"Results_SW.csv"**.  
 - **In R & RStudio:** open **"Detection Code.R"**, and navigate to **section [2]-(7)_Import Manual Sapwood Positions (Optional)**.  
   
 .  
