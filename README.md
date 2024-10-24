@@ -103,6 +103,7 @@ The relevant data inputs for R Scripts will be generated & saved in the same fol
   then selecting any function from **Plugins / ImageJ on GPU (CLIJ2)**.
 - You can edit specific parameters by navigating to **Plugins / Macros / Edit...**, then selecting the **Macro file: "Tree-Ring_Pre-Processing Steps.ijm"**.  
 It is recommended to use the interactive parameter adjustments provided by **CLIJ2-Assistant** from CLIJ2 when processing your own image.  
+- Procedure differences between **CT** & **Printer Scanner** images can be found from their **Macro file: "Tree-Ring_Pre-Processing Steps.ijm"** in their folders.  
 
 ### Step03
 **Aim:** Compute tree ring structures and output as "ring_auto.csv".  
@@ -113,6 +114,7 @@ It is recommended to use the interactive parameter adjustments provided by **CLI
 - This step may take some time to complete.  
 - Please **adjust the R script to match your personal working directory**.  
 The working directory should be the same as the folder containing the input stem image and all processing scripts/macros.  
+- Different parameter adjustments between **CT** & **Printer Scanner** images can be found from their **"Detection Code.R"** in their folders.
 
 ### Step04
 **Aim:** Re-Construct Tree Ring Structures in ImageJ.  
@@ -155,6 +157,19 @@ The imported structure can be a data frame or a list that includes both a **data
 **Note:**  
 If you are performing a **full manual delineation via ImageJ**,  
 - **In ImageJ,** follow the instructions above to save the structure, and name the **.zip** file as **"Results.csv"**.  
-- **In R & RStudio:** open **"Detection Code.R"**, and navigate to **section [2]-(5)_Import Manual Ring Positions (Optional)**.
+- **In R & RStudio:** open **"Detection Code.R"**, and navigate to **section [2]-(5)_Import Manual Ring Positions (Optional)**.  
   
+.  
   
+# 4. Protocol for Sapwood Delineations
+
+
+
+
+
+
+
+
+
+
+
