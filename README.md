@@ -4,9 +4,9 @@
 
 To capture the internal structures of tree stems for nondestructive analysis, we have developed delineation codes and protocols. Since images obtained from computed tomography (CT) scans share similarities with those from standard printer scanners in terms of patterns, colors, and data formats, we tested the applicability of our delineation procedures on common image data from stem discs.  
 
-The detection codes are demonstrated using images from both "CT" and "Printer Scanner" sources. While the core code remains the same, some parameters are adjusted to account for differences in image resolution and condition (fresh versus air-dried samples). For specific details, please refer to the protocols in each folder.  
+The detection codes are demonstrated using images from both "CT" and "Printer Scanner" sources. While the core code remains the same, some parameters are adjusted to account for differences in image resolution and condition (fresh versus air-dried samples). For specific details, please refer to the ImageJ Macros & R Scripts in each folder (***ONLY in Tree-Ring_Pre-Processing Steps.ijm & Detection Code.R***).  
 
-The following sections provide an overview of the software, plugins, packages, and image types used in this stem feature delineation project.  
+In the sections below, we provide an overview of the software, plugins, packages, and image types used in this project, followed by delineation protocols for tree rings and sapwood.  
   
 .  
   
