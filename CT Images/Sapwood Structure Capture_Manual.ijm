@@ -1,10 +1,12 @@
 // -------------------------------------------------------------------------------------- //
-// 2024.05.31 Sapwood Structure Capture
+// 2024.12.10 Sapwood Structure Capture (Manual)
 // -------------------------------------------------------------------------------------- //
 // @description: 
-// This macro is to automate the processing steps to blur, top-hat, threshold, ROI indexed
-// the sapwood region. Noted that, in some cases, 
-// using "Ostu" instead of "Intermodes" might give better results...
+// This macro is to semi-automate the processing steps to:
+// blur, manual supported threshold, ROI indexing
+// the sapwood region. Noted that, in manual-suporting step, 
+// adjust the threshold in the sliding bar, click 'Apply', 
+// agree with any pop-ups from the threshold, and Click OK to continue the code.
 // -------------------------------------------------------------------------------------- //
 // # Environment Settings...
 // Initialize CLIJ2
@@ -29,7 +31,7 @@ width  = getWidth();
 height = getHeight();
 
 // Define the padding size
-paddingSize = 150;
+paddingSize = 400;
 
 // Calculate new dimensions
 newWidth  = width  + 2 * paddingSize;
@@ -55,37 +57,22 @@ sigma_y = 15.0;
 Ext.CLIJ2_gaussianBlur2D(paddedImage, gaussian_blur_r20, sigma_x, sigma_y);
 
 // Pull the blurred image back to CPU memory
-//Ext.CLIJ2_pull(gaussian_blur_r20);
+Ext.CLIJ2_pull(gaussian_blur_r20);
 
 // Show the result
 // run("Tile");
 
-// # Perform top hat filtering ...
-top_hat_r200 = "top_hat_r200";
-radius_z =   0.0;
-Ext.CLIJ2_topHatSphere(gaussian_blur_r20, top_hat_r200, radius_x, radius_y, radius_z);
-
-// Pull the blurred image back to CPU memory
-// Ext.CLIJ2_pull(top_hat_r200);
-
-// Show the result
-// run("Tile");
-
-// # Add detected sapwood into ROIManager ...
+// Trigger the threshold adjustment interface
+// *** Wait for the user to adjust and apply the threshold
+run("Duplicate...", "title=threshold_IMG");
 threshold_IMG = "threshold_IMG";
+selectWindow("threshold_IMG");
+run("Threshold...");
+waitForUser("Please adjust the threshold and click 'Apply'. Click OK here to continue.");
 
-// threshold intermodes
-// Ext.CLIJ2_thresholdIntermodes(top_hat_r200, threshold_IMG);
-
-// ** Some cases, use direct Ostu filter is better ...
-// ** Simply Check the Results from CLIJ2 Assistance
-Ext.CLIJ2_thresholdOtsu(top_hat_r200, threshold_IMG);
-
-// Pull the blurred image back to CPU memory
-Ext.CLIJ2_pull(threshold_IMG);
-
-// Show the result
-// run("Tile");
+// Remove "gaussian_blur_r20" viewing window
+selectWindow("gaussian_blur_r20");
+close();
 
 // Remove the padding using ImageJ's crop function
 selectWindow("threshold_IMG");
@@ -190,3 +177,4 @@ saveAs("Tiff", outputFileName);
 roiManager("select", newArray(0, 1, 2));
 outputROIName = inputDir + "RoiSet_" + inputImage + ".zip";
 roiManager("Save", outputROIName);
+
