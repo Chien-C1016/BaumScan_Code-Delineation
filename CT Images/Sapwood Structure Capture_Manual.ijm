@@ -70,6 +70,11 @@ selectWindow("threshold_IMG");
 run("Threshold...");
 waitForUser("Please adjust the threshold and click 'Apply'. Click OK here to continue.");
 
+if (isOpen("Threshold")) {
+    selectWindow("Threshold");
+    run("Close");
+}
+
 // Remove "gaussian_blur_r20" viewing window
 selectWindow("gaussian_blur_r20");
 close();
@@ -93,7 +98,7 @@ Ext.CLIJ2_closingBox(threshold_IMG, closingImage, number_of_iterations);
 
 // connected Components Labeling Diamond
 // Pull Labels to ROIManager
-labelmap = "labelmap"
+labelmap = "labelmap";
 Ext.CLIJ2_connectedComponentsLabelingDiamond(closingImage, labelmap);
 Ext.CLIJ2_pullLabelsToROIManager(labelmap);
 
