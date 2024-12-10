@@ -3,8 +3,10 @@
 // -------------------------------------------------------------------------------------- //
 // @description: 
 // This macro is to automate the processing steps to blur, top-hat, threshold, ROI indexed
-// the sapwood region. Noted that, in some cases, 
-// using "Ostu" instead of "Intermodes" might give better results...
+// the sapwood region. Noted that, in below, 
+// The "Ostu" filter is now default. 
+// Adjust "//" before Intermodes" at line 81,
+// and add it to linw 85 will activate "Intermodes" Option.
 // -------------------------------------------------------------------------------------- //
 // # Environment Settings...
 // Initialize CLIJ2
