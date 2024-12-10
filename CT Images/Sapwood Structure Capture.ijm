@@ -62,6 +62,8 @@ Ext.CLIJ2_gaussianBlur2D(paddedImage, gaussian_blur_r20, sigma_x, sigma_y);
 
 // # Perform top hat filtering ...
 top_hat_r200 = "top_hat_r200";
+radius_x = 200.0;
+radius_y = 200.0;
 radius_z =   0.0;
 Ext.CLIJ2_topHatSphere(gaussian_blur_r20, top_hat_r200, radius_x, radius_y, radius_z);
 
