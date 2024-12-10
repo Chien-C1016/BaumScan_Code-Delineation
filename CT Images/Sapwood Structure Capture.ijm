@@ -110,7 +110,7 @@ Ext.CLIJ2_closingBox(threshold_IMG, closingImage, number_of_iterations);
 
 // connected Components Labeling Diamond
 // Pull Labels to ROIManager
-labelmap = "labelmap"
+labelmap = "labelmap";
 Ext.CLIJ2_connectedComponentsLabelingDiamond(closingImage, labelmap);
 Ext.CLIJ2_pullLabelsToROIManager(labelmap);
 
