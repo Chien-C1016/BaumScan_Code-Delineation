@@ -49,7 +49,7 @@ Key Packages including: ***Imager, TSP, dplyr, purrr, OpenImageR***, the relevan
   
 ## Example Imagries
 Please note that the codes are designed for **grayscale images**.  
-Hence, if images from normal printer scanners are with RGB format, make sure to convert them into greyscale. 
+Hence, if images from normal printer scanners are with RGB format, make sure to convert them into grayscale. 
 However, it is also recommanded to use the predefined option in office printer scanners to generate grayscale images other than color ones.  
 
 ### (1) Image from CT
