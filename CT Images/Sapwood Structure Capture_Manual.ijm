@@ -38,7 +38,7 @@ newWidth  = width  + 2 * paddingSize;
 newHeight = height + 2 * paddingSize;
 
 // Create a new image with the new dimensions, filled with zeros
-paddedImage = "paddedImage"
+paddedImage = "paddedImage";
 Ext.CLIJ2_create2D(paddedImage, newWidth, newHeight, 32); // 32-bit float image
 
 // Copy the original image to the center of the new image
