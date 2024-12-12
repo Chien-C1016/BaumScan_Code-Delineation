@@ -6,7 +6,7 @@ require(imager)
 
 # Work directory
 # Select the Image & Code directory
-setwd("C:/Users/chien/OneDrive - TUM/PhD PaperWriting/Paper_01_Automatic pith and tree-ring detection/Protocol/CT Images")
+setwd(setwd("D:/Schreiben/Results/Fi_01"))
 
 # Self-defined Scripts
 source("Functions_Pith.R")

@@ -2794,6 +2794,58 @@ segment.DetHold <- function(target.ring,
 
 
 
+segment.GroupRefine <- function(segment.df){
+  
+  .check <- .ring.morph$theta %>% table()
+  .pos   <- .check > 1
+  if(purrr::is_empty(.pos)!=TRUE){
+    
+    # replicates in segment.df
+    ck.num <- .check[.pos] %>% names()
+    .ckpos <- which(segment.df$theta %in% ck.num)
+    
+    # Separate the overlapped segment sections
+    .ring.check  <- segment.df[ .ckpos,]
+    .ring.remain <- segment.df[-.ckpos,]
+    
+    ## Save the clusters with Number IDs
+    ..keep.id <- 
+      .ring.check$clst %>% 
+      unique() %>% 
+      grep("^[0-9]+$", ., value = TRUE)
+    .ring.mkeep <- 
+      .ring.check %>% 
+      dplyr::filter(clst %in% ..keep.id) %>% 
+      dplyr::group_by(theta) %>% 
+      dplyr::summarise(clst = min(clst),
+                       dist = mean(dist)) %>% 
+      dplyr::mutate(clst  = as.character(clst),
+                    theta = round(theta, digits = .digits))
+    
+    ## Merge any other morph segments
+    .ring.morph <-
+      .ring.check %>% 
+      dplyr::filter(!clst  %in% ..keep.id) %>% 
+      dplyr::filter(!theta %in% as.character(.ring.mkeep$theta)) %>% 
+      dplyr::group_by(theta) %>% 
+      dplyr::summarise(dist = mean(dist)) %>% 
+      dplyr::mutate(clst  = "clst.M",
+                    theta = round(theta, digits = .digits))
+    
+    ## Merge .ring.mkeep & .segment.df
+    segment.df <- 
+      rbind(.ring.mkeep, .ring.morph) %>% 
+      dplyr::select(names(.ring.remain)) %>% 
+      rbind(., .ring.remain)
+    
+  }
+  
+  return(segment.df)
+  
+}
+
+
+
 # Not Possible...
 morph.check <- function(ring.morph){
   

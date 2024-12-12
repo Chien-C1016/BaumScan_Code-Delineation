@@ -4600,7 +4600,9 @@ segment.Morph.Search <- function(ring.segments,
                       dplyr::arrange(theta)
                     
                     # Morph-searched & ring.i
-                    .ring.morph <- morph.list %>% dplyr::bind_rows()
+                    .ring.morph <- 
+                      morph.list %>% 
+                      dplyr::bind_rows() %>% segment.GroupRefine()
                     .ring.i  <- ring.ck %>% dplyr::filter(clst %in% Ring.ID.i)
                     
                     # In-between
