@@ -457,7 +457,7 @@ segment.Morph.Search <- function(ring.segments,
         while (TRUE) {
           
           # k-Check
-          # if(k == 3){stop("K Check")}
+          # if(k == 2){stop("K Check")}
           # if(is_empty(which(is.na(ring.2$dist)))!=TRUE){stop("ring.2 Check")}
           
           # Update Check
@@ -3365,10 +3365,6 @@ segment.Morph.Search <- function(ring.segments,
                 
               }
               
-              
-              # Update Should ONLY Happened when it is not "REJECTED"
-              # at 03_Gap Section
-              
             }
             
           }
@@ -4180,13 +4176,33 @@ segment.Morph.Search <- function(ring.segments,
           if(purrr::is_empty(temp.sec.big.sum$clst) != TRUE &
              purrr::is_empty(temp.small.sum$clst) != TRUE){
             
-            # Right-boundary from Big-Segments
-            temp.sec.edge02
-            
-            # Left-boundary from Small-Segments
-            temp.small.sum$max.theta %>% max()
-            
-            if((temp.sec.edge02 - max(temp.small.sum$max.theta)) > 1){
+            # Boundary from Big-Segments
+            #' [Add-in]:S.Flip
+            if(S.Flip == TRUE){
+              
+              # Correspond Boundary from Grouped Big Segments
+              temp.big.rb <- temp.sec.big.sum$max.theta %>% max()
+              
+              # Correspond Boundary from Grouped small Segments
+              temp.small.lb <- temp.small.sum$min.theta %>% min()
+              
+              # Gap_in_Between
+              Gap_in_Between <- temp.small.lb - temp.big.rb
+              
+            }else{
+              
+              # Correspond Boundary from Grouped Big Segments
+              temp.big.lb <- temp.sec.big.sum$min.theta %>% min()
+              
+              # Correspond Boundary from Grouped small Segments
+              temp.small.rb <- temp.small.sum$max.theta %>% max()
+              
+              # Gap_in_Between
+              Gap_in_Between <- temp.big.lb - temp.small.rb
+              
+            }
+                       
+            if(Gap_in_Between > 1){
               
               # Gap is to big
               # -> Clean Big-Segment Position to Pass the code to
@@ -4196,38 +4212,18 @@ segment.Morph.Search <- function(ring.segments,
               temp.sec.big.sum <- temp.section.sum[vector(),]
               temp.section.sum 
               
+              # Report
+              message("Huge Gap in between grouped small and big segments...keep small")
+              
               # Big.Group Control
-              if(Big.Group == TRUE ){
+              if(Big.Group == TRUE |  Big.Group.Mid == TRUE){
                 
                 Big.Group <- FALSE
+                Big.Group.Mid <- FALSE
                 
               }
-              
-            }else{
-              
-              # Update temp.ring.sc
-              # The Grouped Segments ID will be given back by "Signal"
-              .pos <- which(temp.ring.sc$clst %in% temp.sec.big.sum$clst)
-              temp.ring.sc$clst[.pos] <- temp.sec.big.sum$clst[1]
-              
-              # Update Summary Table
-              temp.sec.big.sum <-
-                data.frame(clst      = temp.sec.big.sum$clst[1],
-                           m.delta   = mean(temp.sec.big.sum$m.delta),
-                           sd.delta  = mean(temp.sec.big.sum$sd.delta),
-                           npts      = sum(temp.sec.big.sum$npts),
-                           max.theta = max(temp.sec.big.sum$max.theta),
-                           min.theta = min(temp.sec.big.sum$min.theta),
-                           dist.l    = mean(temp.sec.big.sum$dist.l),
-                           dist.r    = mean(temp.sec.big.sum$dist.r),
-                           segment.l = sum(temp.sec.big.sum$segment.l))
-              
-              # Update big.segment.pos
-              temp.ring.sc.sum <- rbind(temp.section.sum, temp.sec.big.sum)
-              big.segment.pos  <- 
-                which(temp.ring.sc.sum$segment.l > segment.size)
-              
             }
+            
           }
           
           

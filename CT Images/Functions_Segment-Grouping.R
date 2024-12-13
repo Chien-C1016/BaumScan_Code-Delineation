@@ -2796,9 +2796,13 @@ segment.DetHold <- function(target.ring,
 
 segment.GroupRefine <- function(segment.df){
   
-  .check <- .ring.morph$theta %>% table()
-  .pos   <- .check > 1
+  .check <- segment.df$theta %>% table()
+  .pos   <- which(.check > 1)
   if(purrr::is_empty(.pos)!=TRUE){
+    
+    # Preparation
+    diff_values <- diff(sort(unique(segment.df$theta)))
+    .digits <- max(nchar(sub(".*\\.", "", diff_values)))
     
     # replicates in segment.df
     ck.num <- .check[.pos] %>% names()
@@ -2817,9 +2821,8 @@ segment.GroupRefine <- function(segment.df){
       .ring.check %>% 
       dplyr::filter(clst %in% ..keep.id) %>% 
       dplyr::group_by(theta) %>% 
-      dplyr::summarise(clst = min(clst),
-                       dist = mean(dist)) %>% 
-      dplyr::mutate(clst  = as.character(clst),
+      dplyr::summarise(dist = mean(dist)) %>% 
+      dplyr::mutate(clst  = ..keep.id[1],
                     theta = round(theta, digits = .digits))
     
     ## Merge any other morph segments
