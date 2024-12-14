@@ -2092,19 +2092,29 @@ segment.Morph.Search <- function(ring.segments,
             #' row ID == *Ring.ID.i*, increase the acceptance criteria by 5.
             if(purrr::is_empty(...ring.keep.sum$clst) != TRUE){
               
-              if(nrow(...ring.keep.sum) == 1 &
-                 Ring.ID.i %in% ...ring.keep.sum$clst){
+              if(Ring.ID.i %in% ...ring.keep.sum$clst){
                 
-                .pos <- which(..keep.sum.value < Inf)
-                if(...ring.keep.sum$m.delta < 5){
+                .ring.i.pos <- which(...ring.keep.sum$clst == Ring.ID.i)
+                
+                if(nrow(...ring.keep.sum) == 1){
                   
-                  # Report
-                  message("# Ring.ID.i Adjustments...")
-                  print("Larger allowance on at the beginning of ring.i ")
-                  ...ring.keep.sum$m.delta <- 0
-                  ..keep.sum.value[.pos]   <- 0
+                  .pos <- which(..keep.sum.value < Inf)
+                  if(...ring.keep.sum$m.delta < 5){
+                    
+                    # Report
+                    message("# Ring.ID.i Adjustments...")
+                    print("Larger allowance on at the beginning of ring.i ")
+                    ...ring.keep.sum$m.delta <- 0
+                    ..keep.sum.value[.pos]   <- 0
+                    
+                  }
+                  
+                }else if(...ring.keep.sum$npts[.ring.i.pos] < 3){
+                  
+                  ...ring.keep.sum$sd.delta[.ring.i.pos] <- 0
                   
                 }
+                
                 
               }
               
