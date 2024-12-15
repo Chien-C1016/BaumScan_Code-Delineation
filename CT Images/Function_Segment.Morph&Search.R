@@ -740,6 +740,11 @@ segment.Morph.Search <- function(ring.segments,
               
             }
             
+            #'[04:Fix Existence of ".ring_closeby"]
+            if(exists(.ringi_closeby) == TRUE){
+              .ringi_closeby <- .ringi_closeby.e1[vector(),]
+            }
+            
             #'[Neighboring Morphing Search Based on ringi_closeby]
             #'@description 
             #' 
@@ -1816,6 +1821,10 @@ segment.Morph.Search <- function(ring.segments,
                 dplyr::arrange(min.theta) %>% 
                 as.data.frame()
               
+              # Fix npts might == 1
+              ..fix.pos <- which(..ring.keep.sum$npts == 1)
+              ..ring.keep.sum$sd.delta[..fix.pos] <- 0
+              
               # Scenarios of ring.keep for adjustments:
               #'@special
               #' The ring.keep have 3 different scenarios with mid.big:
@@ -2112,6 +2121,7 @@ segment.Morph.Search <- function(ring.segments,
                 }else if(...ring.keep.sum$npts[.ring.i.pos] < 3){
                   
                   ...ring.keep.sum$sd.delta[.ring.i.pos] <- 0
+                  ..keep.sum.value[is.na(..keep.sum.value)] <- 0
                   
                 }
                 
