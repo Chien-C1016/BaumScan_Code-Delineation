@@ -6346,8 +6346,51 @@ segment.Morph.Search <- function(ring.segments,
           # stop("Check")
           
           # ------------------------------------------------------------------ #
-          #'[Flowchart:]
-          #'[02:]
+          # Determine the voted structure
+          #'@description
+          #' [Keys:]
+          #' (1) vot.pos: Which structure gets the maximum votes;
+          #' (2) vot.det: How different are other structure to the vote.pos
+          #' (3) hold.dist: The distance between considered structure and  
+          #'     the reference tree ring structure (ring.2).
+          #' The scenarios triggered by (1) means there is a unique max vote, 
+          #' when disagreed, this means might be overlapping scenario. Use 
+          #' vot.det to clarify the independence of voted structure.
+          #' [Scenarios:]
+          #' (1) max vote  + non-independent other structures -> unique
+          #' (2) max vote  + independent other structures     -> 1-2 unique
+          #' (3) even vote + non-independent other structures -> overlap
+          #' (2) even vote + independent other structures     -> 1-2 unique
+          #' [Respective_Results:]
+          #' (1) Remain vote.pos -> .update == TRUE
+          #' (2) independent flowchart:
+          #'     check hold.dist -> vote.pos.min   -> 1 unique, .update == TRUE
+          #'     else -> check vote.ratio > 0.5    -> 2 unique, 
+          #'     .update & .update.2 == TRUE; else -> 1 unique,
+          #'     pick min.hold.dist, .update == TRUE
+          #' (3) Overlap -> pick min.hold.dist
+          #' (4) independent flowchart:
+          #'     check hold.dist -> vote.pos.min   -> 1 unique, .update == TRUE
+          #'     else -> check vote.ratio > 0.5    -> 2 unique, 
+          #'     .update & .update.2 == TRUE; else -> 1 unique, 
+          #'     pick min.hold.dist, .update == TRUE
+          #' [Decision:]
+          #' vote.pos -> 
+          #' [vote.pos is min dist]
+          #' :<Y> -> vote.pos; .update = TRUE
+          #' :<N>
+          #'   |
+          #' [independent]
+          #' :<Y> -> min.distance + vote.ratio
+          #' :<N>
+          #'   |
+          #' [even vote]
+          #' :<Y> -> overlap: min.distance
+          #' :<N> -> No independent others + No even vote -> .update = TRUE
+          #' 
+          #'@detail
+          #'[Independent_Flowchart]
+          #'[01:]
           #' [vot.pos]
           #'  |
           #' [Any vot.det >= 0.9] :<N> -> [vot.pos]
@@ -6356,12 +6399,12 @@ segment.Morph.Search <- function(ring.segments,
           #' [which.min hold.dist] :<min = vot.pos> -> [vot.pos]
           #' :<min = pos.vote.det>=0.9>
           #'  |
-          #' [vote.hold > 50% n(!0) ] :<Y> -> [vot.pos] + 
-          #' :<N>                             [pos.vote.det>=0.9&min.hold.dist]
+          #' [vote.ratio > 0.5] :<Y> -> [vot.pos] + 
+          #' :<N>                       [pos.vote.det>=0.9&min.hold.dist]
           #'  |
           #' [pos.vote.det>=0.9 & min.hold.dist]
           #'
-          #'[03:]
+          #'[02:]
           #' [Picked Structure]: [pos.vote.det>=0.9&min.hold.dist]
           #'  |
           #' [Any vot.det <= 0.1: n()>1] :<N> -> [Picked Structure]
@@ -6389,15 +6432,15 @@ segment.Morph.Search <- function(ring.segments,
           #'(1) 2 or more ring structures were detected in hold;
           #'(2) min hold.dist (dist to ref tree ring);
           #'(3) structures with same vote.
-          # ------------------------------------------------------------------ #
           
           #'[Det_Check]
-          Vote.det.list <- segment.DetHold(target.ring  = hold.keep [[vote.pos]],
-                                           target.morph = hold.morph[[vote.pos]],
-                                           hold.id      = hold.id, 
-                                           hold.morph   = hold.morph,
-                                           check.segments = ring.ck,
-                                           ReSample.Size  = ReSample.Size)
+          Vote.det.list <- 
+            segment.DetHold(target.ring  = hold.keep [[vote.pos]],
+                            target.morph = hold.morph[[vote.pos]],
+                            hold.id      = hold.id, 
+                            hold.morph   = hold.morph,
+                            check.segments = ring.ck,
+                            ReSample.Size  = ReSample.Size)
           vote.det      <- Vote.det.list$hold.det
           vote.sum.list <- Vote.det.list$hold.sum.list
           
@@ -6407,215 +6450,149 @@ segment.Morph.Search <- function(ring.segments,
           # points(hold.keep[[vote.pos]]$theta, hold.keep[[vote.pos]]$dist, 
           #        cex = 0.3, col = "lightblue")
           
-          #'[Condition01: Multiple options have same vote]
-          .vote.sum <- vote.sum %>% dplyr::filter(hold.vote != 0)
-          if(length(which(.vote.sum$count == vote.hold)) > 1){
+          #'[Keys]
+          vote.pos
+          vote.det
+          multiple_votes <- 
+            vote.sum %>%
+            dplyr::filter(hold.vote != 0, count == vote.hold) %>%
+            nrow() > 1
+          vote.pos.min <- 
+            if (any(vote.det >= 0.9)) {
+              hold.dist[vote.pos] > min(hold.dist[vote.det >= 0.9])
+            } else {TRUE}
+          
+          # ------------------------------------------------------------------ #
+          
+          #'[Decision]
+          if(all(vote.pos.min == TRUE)){
             
-            # message
-            message("Multiple Agreement Options...")
+            # Signal
+            message("[Det]: Determined by vote's distance to reference")
             
-            # Check
-            stop("Check multiple agreements ...")
             
-            # Potential Positions
-            pos.vote <- 
-              which(as.numeric(table(hold.clst.ck[.pos])) == vote.hold)
             
-            # pick the ring that is closest to ring.2
-            .pick <- which.min(hold.dist[pos.vote])
+          }else if(any(vote.det >= 0.9)){
             
-            # Check the status of other ring products:
-            k = 1
-            hold.det <- vector()
-            .keep.id <- hold.id[[pos.vote[.pick]]]
-            while (k <= length(pos.vote)) {
+            #'[hold.det >= 0.9, Other independent ring structure]
+            
+            # Independent others (Tree Ring Structures)
+            .ck.pos <- which(vote.det >= 0.9)
+            
+            # Signal
+            message("[Det]: Other Independent Tree Ring Structure Found")
+            print(.ck.pos)
+            
+            # More than 1 structures recognized:
+            if(length(.ck.pos)>1){
               
-              .hold.det <-
-                (dplyr::setdiff(.keep.id, 
-                                hold.id[[pos.vote[k]]]) %>% length())/
-                (length(.keep.id))
-              hold.det <- append(hold.det, .hold.det)
+              # Independent Positions:
+              ind.pos <- append(vote.pos, .ck.pos) %>% sort()
               
-              # k-loop control
-              k = k + 1
+              # Start Coding with which.max only return 1 value:
+              .ck.pos <- which.max(vote.det) 
+              
+              # Update det value based on .ck.pos
+              .det.list <- segment.DetHold(target.ring  = hold.keep [[.ck.pos]],
+                                           target.morph = hold.morph[[.ck.pos]],
+                                           hold.id      = hold.id, 
+                                           hold.morph   = hold.morph,
+                                           check.segments = ring.ck,
+                                           ReSample.Size  = ReSample.Size)
+              .det      <- .det.list$hold.det
+              .sum.list <- .det.list$hold.sum.list
+              
+              # Re-select independent segments based on .ck.pos
+              .pick.pos <- which(.det >= 0.9)
+              .pick.ind <- append(.ck.pos, .pick.pos) %>% sort()
+              
+              # More than 1 structures recognized:
+              if(identical(as.integer(ind.pos), as.integer(.pick.ind))){
+                stop("[Note]: More than 1 structures recognized")}
               
             }
-            hold.det
             
-            #'[Scenario01: Different Tree Ring Structures]
-            #'@note
-            #' If any det.value == 1, 
-            #' this means that this ring is most likely 
-            #' a completely different ring which should be searched 
-            #' based on the current result later.
-            if(any(hold.det==1)){
+            # Final hold.dist Assure
+            if(hold.dist[.ck.pos] < hold.dist[vote.pos]){
               
-              remove.pos <- which(hold.det == 1)
-              
-              # Check
-              hold.det
-              
-              # Update
-              hold.det <- hold.det[-remove.pos]
-              pick.pos <- pos.vote[.pick]
-              pos.vote <- pos.vote[-remove.pos]
-              .pick    <- which(pos.vote == pick.pos)
-              
-            }
-            
-            # use ".pick" to pick the one with small hold.dist
-            vote.pos <- pos.vote[.pick]
-            
-            #'[Scenario02: Overlapped Tree Ring Structures]
-            #'@note
-            # If there are still rings with same vote,
-            # make use of other ring products that have the same vote
-            # (Only if they are overlapped, hold.vote < 1)
-            if(length(pos.vote) != 1){
-              
-              others.pos <- pos.vote[-.pick]
-              select.pos <- pos.vote[ .pick]
-              k = 1
-              others.id <- vector()
-              while (k <= length(others.pos)) {
-                
-                others.id <- append(others.id, hold.id[[others.pos[k]]])
-                k = k + 1
-                
-              }
-              select.id <- hold.id   [[select.pos]]
-              select.df <- hold.keep [[select.pos]]
-              select.mf <- hold.morph[[select.pos]]
-              
-              # Rename cluster.id
-              select.df$clst <- "df"
-              select.mf$clst <- "mf"
-              
-              # possibilities
-              diff.id <- dplyr::setdiff(others.id, select.id)
-              
-              # Ensure Data Structure
-              hold.diff       <- ring.ck %>% dplyr::filter(clst %in% diff.id)
-              hold.diff$theta <- hold.diff$theta %>% round(digits = .digits)
-              .hold.mf        <- select.mf
-              .hold.mf$theta  <- .hold.mf$theta  %>% round(digits = .digits)
-              .hold.df        <- select.df
-              .hold.df$theta  <- .hold.df$theta  %>% round(digits = .digits)
-              .hold.df <-
-                .hold.df %>% 
-                dplyr::group_by(theta) %>% 
-                dplyr::summarise(dist = min(dist))
-              .hold.df$clst <- "df"
-              
-              #' [keep.sum] + [keep.overlap]
-              # determine the possible missing segments
-              .keep <-
-                hold.diff %>% 
-                ring.join(., .hold.mf) %>% 
-                dplyr::mutate(delta = dist - dist.mf)
-              keep.sum <- 
-                .keep %>% 
-                dplyr::group_by(clst) %>% 
-                dplyr::mutate(theta   = round(theta, digits = .digits),
-                              overlap = theta %in% .hold.df$theta) %>% 
-                dplyr::summarise(npts = n(),
-                                 det  = mean(delta),
-                                 sd   = sd(delta),
-                                 overlap = sum(overlap)) %>% 
-                dplyr::filter(overlap == 0 & det < 0)
-              
-              # Update the hold results of the "voted" ring
-              .hold.id    <- append(select.id, keep.sum$clst)
-              .ring.keep  <- ring.ck %>% dplyr::filter(clst %in% .hold.id)
-              .hold.morph <- 
-                .ring.keep %>% 
+              # Unique clst structure of .ck.pos
+              hold.id     [[.ck.pos]] <- 
+                dplyr::setdiff(hold.id[[.ck.pos]], hold.id[[vote.pos]])
+              hold.keep   [[.ck.pos]] <- 
+                hold.keep [[.ck.pos]] %>% 
+                dplyr::filter(clst %in% hold.id[[.ck.pos]])
+              hold.morph  [[.ck.pos]] <- 
+                hold.keep [[.ck.pos]] %>% 
                 segment.smooth(ring.ref = ring.2,
                                coverage = 0.7,
                                name.write = "ref",
                                Morph.step = ReSample.Size)
               
-              # Update
-              hold.keep [[vote.pos]] <- .ring.keep
-              hold.morph[[vote.pos]] <- .hold.morph
-              
-            }
-            
-          }
-          
-          #'[Condition02: hold.det >= 0.9, Other independent ring structure]
-          #'[Step-01]
-          vote.pos.min <- TRUE
-          if(any(vote.det >= 0.9)){
-            vote.pos.min <- hold.dist[vote.pos] < hold.dist[vote.det >= 0.9]}
-          #'[Step-02]
-          if(any(vote.det >= 0.9) & any(vote.pos.min != TRUE)){
-            
-            #' Signal
-            message("[Det]: Other Independent Tree Ring Structure Found")
-            
-            #' Another Tree Ring Structures
-            .ck.pos <- which(vote.det >= 0.9)
-            
-            #' More than 1 structures recognized:
-            if(length(.ck.pos)>1){
-              
-              stop("[Det]: More than 1 structures recognized")
-              
-              .ck.pos <- which.max(vote.det) # which.max only return 1 value
-              
-            }
-            
-            #' Update det value based on .ck.pos
-            .det.list <- segment.DetHold(target.ring  = hold.keep [[.ck.pos]],
-                                         target.morph = hold.morph[[.ck.pos]],
-                                         hold.id      = hold.id, 
-                                         hold.morph   = hold.morph,
-                                         check.segments = ring.ck,
-                                         ReSample.Size  = ReSample.Size)
-            .det      <- .det.list$hold.det
-            .sum.list <- .det.list$hold.sum.list
-            
-            #' pick possible segments within hold.keep
-            hold.pick <- which(.det < 0.2)
-            hold.pick <- hold.pick[hold.pick != .ck.pos]
-            if(purrr::is_empty(hold.pick)!=TRUE){
-              stop("[Det]: More than 1 optional structures recognized")}
-            
-            #' Unique clst structure of .ck.pos
-            hold.id     [[.ck.pos]] <- 
-              dplyr::setdiff(hold.id[[.ck.pos]], hold.id[[vote.pos]])
-            hold.keep   [[.ck.pos]] <- 
-              hold.keep [[.ck.pos]] %>% 
-              dplyr::filter(clst %in% hold.id[[.ck.pos]])
-            hold.morph  [[.ck.pos]] <- 
-              hold.keep [[.ck.pos]] %>% 
-              segment.smooth(ring.ref = ring.2,
-                             coverage = 0.7,
-                             name.write = "ref",
-                             Morph.step = ReSample.Size)
-            
-            # if vote.pos has over 50% votes
-            vote.ratio <- vote.hold / length(which(hold.clst.ck != 0))
-            if(vote.ratio > 0.5){
-              
-              # Signal
-              message("# Both Tree Ring Structures Acquired...")
-              
-              .update.2 <- TRUE
-              .ring.keep  <- hold.keep [[.ck.pos]]
-              .ring.morph <- hold.morph[[.ck.pos]]
+              # if vote.pos has over 50% votes of the remaining votes
+              vote.ck <- 
+                hold.clst.ck[hold.clst.ck != 0] %>%
+                table() %>%
+                as.numeric() %>%
+                .[.ck.pos]
+              vote.remain <- length(which(hold.clst.ck != 0)) - vote.ck
+              vote.ratio  <- vote.hold / vote.remain
+              if(vote.ratio > 0.5){
+                
+                # Signal
+                message("# Both Tree Ring Structures Acquired...")
+                
+                .update.2 <- TRUE
+                .ring.keep  <- hold.keep [[.ck.pos]]
+                .ring.morph <- hold.morph[[.ck.pos]]
+                
+              }else{
+                
+                # Signal
+                message("# Inner Tree Ring Structures Acquired...")
+                
+                # Update vote.pos
+                vote.pos <- .ck.pos
+                
+              }
               
             }else{
               
-              # Signal
-              message("# Inner Tree Ring Structures Acquired...")
-              
-              # Update vote.pos
-              vote.pos <- .ck.pos
+              #' *NORMALLY* This should not happen
+              stop("[Note]: Other Independent Structure is further...")
               
             }
             
+            
+            
+          }else if(multiple_votes == TRUE){
+            
+            #'[multiple_votes, Multiple options have same vote]
+            
+            # Signal
+            message("[Det]: Overlapped Tree Ring Structures Encountered")
+            print("[Note]: Overlaps are hard to judge: Potential Error")
+            
+            # Overlapped Tree Ring Structures + min hold.dist
+            .ck.pos <- 
+              vote.sum %>%
+              dplyr::filter(hold.vote != 0, count == vote.hold) %>% 
+              dplyr::pull(hold.vote) %>%
+              {.[which.min(hold.dist[.])]}
+            
+            # Update vote.pos
+            vote.pos <- .ck.pos
+            
+            
+            
+          }else{
+            
+            #'[Other Possibilities Removed, select vote.pos]
+            
+            # Signal
+            message("[Det]: Determined by exclusion of other possibilities")
+            
           }
+          
           
           # Signal & Update
           .update <- TRUE
