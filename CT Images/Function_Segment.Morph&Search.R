@@ -741,7 +741,7 @@ segment.Morph.Search <- function(ring.segments,
             }
             
             #'[04:Fix Existence of ".ring_closeby"]
-            if(exists(.ringi_closeby) == TRUE){
+            if(exists(".ringi_closeby") == TRUE){
               .ringi_closeby <- .ringi_closeby.e1[vector(),]
             }
             
