@@ -231,16 +231,26 @@ pith.CenterCheck <- function(df.db){
   #   unique()
   # eps_scale = r.search/2
   
-  #'[Method: kNNdist]
-  #'[Find better eps_scale]
-  #'@note See: dbscan.eps
-  eps_scale <- df.valid %>% dbscan.eps()
-  frnn_dat  <- dbscan::frNN(df.valid, eps = eps_scale)
-  db_dat    <- dbscan::dbscan(frnn_dat, minPts = 3)
+  # Group inner center of the segment clusters
+  if(nrow(df.valid) > 5){
+    
+    #'[Method: kNNdist]
+    #'[Find better eps_scale]
+    #'@note See: dbscan.eps
+    eps_scale <- df.valid %>% dbscan.eps()
+    frnn_dat  <- dbscan::frNN(df.valid, eps = eps_scale)
+    db_dat    <- dbscan::dbscan(frnn_dat, minPts = 3)
+    
+  }else{
+    
+    #' Take ALL CENTER without exclusion
+    db_dat <- list()
+    db_dat$cluster <- rep(x = 1, nrow(df.valid))
+    
+  }
   
   # Extract the clusters
-  # in case double pith
-  # 2 db_scan groups are available
+  # in case double pith 2 db_scan groups are available (***)
   message("# Extract Inner-most Clusters as Pith #")
   
   n.clt <- unique(db_dat$cluster)

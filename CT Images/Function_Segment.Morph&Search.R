@@ -1,5 +1,4 @@
 
-source("Functions_Segment-Grouping.R")
 
 segment.Morph.Search <- function(ring.segments,
                                  rev.control,
@@ -741,7 +740,7 @@ segment.Morph.Search <- function(ring.segments,
             }
             
             #'[04:Fix Existence of ".ring_closeby"]
-            if(exists(".ringi_closeby") == TRUE){
+            if(exists(".ringi_closeby") != TRUE){
               .ringi_closeby <- .ringi_closeby.e1[vector(),]
             }
             
@@ -6459,7 +6458,7 @@ segment.Morph.Search <- function(ring.segments,
             nrow() > 1
           vote.pos.min <- 
             if (any(vote.det >= 0.9)) {
-              hold.dist[vote.pos] > min(hold.dist[vote.det >= 0.9])
+              hold.dist[vote.pos] < min(hold.dist[vote.det >= 0.9])
             } else {TRUE}
           
           # ------------------------------------------------------------------ #
