@@ -289,10 +289,17 @@ ring.ResampleSegments <- function(df.clst,
        rs.rs$npts < 20){ # use 100 for none-dist_resampled data
       ## Small Ring Segments ----
       
+      # Fix
+      #'@note
+      #' For some segments, there are really small deviations (~0.0001)
+      #' These do not contribute "unique" theta range to a considered segment
+      len.unique_theta <-
+        length(unique(round(df.rs$theta, digits = (.digits-1))))
+      
       #'@note 
       #' If the segments are too small (npts <= 3)
       #' the Re-Sampling will use lm
-      if(length(unique(df.rs$theta)) == 1){
+      if(len.unique_theta == 1){
         
         print(paste("Only 1 point exists, skip"))
         temp.df.rs <- data.frame(clst    = df.rs$clst,
@@ -300,7 +307,7 @@ ring.ResampleSegments <- function(df.clst,
                                  dist    = df.rs$dist,
                                  Ang.pos = df.rs$Ang.pos)
         
-      }else if(length(unique(df.rs$theta)) <= 4){
+      }else if(len.unique_theta <= 4){
         
         # Linear lm
         lm.rs <- lm(dist ~ theta, data = df.rs)
