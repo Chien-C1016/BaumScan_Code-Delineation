@@ -129,7 +129,13 @@ segment.Morph.Search <- function(ring.segments,
       #'@note 
       #' if there are not enough segments, move the search to 
       #' the next "Trust Tree Ring Segment Cluster (ii)"
-      if(range(ring.ReSampled$theta) %>% diff() < 2*.pi*0.7){
+      #'@Fix
+      #' Ensure at least a pair of numbers for range(), dist()
+      dist.resample <-
+        if(nrow(ring.ReSampled) > 1){
+          range(ring.ReSampled$theta) %>% diff()}else{0}
+      
+      if(dist.resample < 2*.pi*0.7){
         
         # Output Complete-Ring Result
         # ring.k.list <- append(ring.k.list, list(ring.2))
@@ -5672,10 +5678,18 @@ segment.Morph.Search <- function(ring.segments,
       ring.morph <- rbind(ring.morph, ring.i[,c("clst", "theta", "dist")])
       
       # Check 
+      #'@note
+      #' In case, in the future, 
+      #' there's time to fix this issue, it happens in the ring.morph that 
+      #' there are segments with ID overlapped with the morphed segments.
       if(nrow(ring.morph) != nrow(ring.2)){
         
-        message("PHASE I")
-        stop("The morph ring has unequal length to the morph base")
+        message("PHASE I - Unequal Length: segment.GroupRefine()")
+        # stop("The morph ring has unequal length to the morph base")
+        
+        # Quick Solution:
+        ring.morph <- ring.morph %>% segment.GroupRefine()
+        if(nrow(ring.morph) != nrow(ring.2)){stop("...Failled")}
         
       }
       
@@ -5768,8 +5782,12 @@ segment.Morph.Search <- function(ring.segments,
       # Check 
       if(nrow(ring.morph) != nrow(ring.2)){
         
-        message("PHASE II")
-        stop("The morph ring has unequal length to the morph base")
+        message("PHASE II - Unequal Length: segment.GroupRefine()")
+        # stop("The morph ring has unequal length to the morph base")
+        
+        # Quick Solution:
+        ring.morph <- ring.morph %>% segment.GroupRefine()
+        if(nrow(ring.morph) != nrow(ring.2)){stop("...Failled")}
         
       }
       
