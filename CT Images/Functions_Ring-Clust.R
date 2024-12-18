@@ -243,6 +243,12 @@ ring.ResampleSegments <- function(df.clst,
       
     }
     
+    # How many points per Angular range
+    rs.rs <-
+      rs.rs %>% 
+      dplyr::group_by(clst) %>% 
+      dplyr::mutate(Ang.npts = npts / Ang.range)
+    
     # Segment Edges of rs (ensure format by "ReSample.Size"&.digits)
     theta.l <- df.rs$theta %>% min() %>% round(., digits = .digits)
     theta.r <- df.rs$theta %>% max() %>% round(., digits = .digits)
@@ -286,7 +292,7 @@ ring.ResampleSegments <- function(df.clst,
     
     # Smooth.spline ----
     if(rs.rs$Ang.range <= AngularPositionUse |
-       rs.rs$npts < 20){ # use 100 for none-dist_resampled data
+       rs.rs$Ang.npts < 20){
       ## Small Ring Segments ----
       
       # Fix
@@ -319,7 +325,7 @@ ring.ResampleSegments <- function(df.clst,
                                  dist    = dist.rs,
                                  Ang.pos = Ang.prs)
         
-      }else if(rs.rs$npts < 20 |
+      }else if(rs.rs$Ang.npts < 20 |
                dist(range(df.rs$theta)) < 0.2){
         
         # Smooth.spline

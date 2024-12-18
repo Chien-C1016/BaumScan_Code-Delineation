@@ -2855,7 +2855,8 @@ segment.Morph.Search <- function(ring.segments,
                   ring.i %>% 
                   dplyr::filter(clst %in% Ring.ID.i) %>% 
                   rbind(., dplyr::bind_rows(morph.list)) %>% 
-                  rbind(ring.rm)
+                  rbind(ring.rm) %>% 
+                  segment.GroupRefine()
                 ring.2$theta <- ring.2$theta %>% round(digits = .digits)
                 ring.2$clst  <- "ref"
                 
