@@ -6,7 +6,7 @@ require(imager)
 
 # Work directory
 # Select the Image & Code directory
-setwd(setwd("D:/Schreiben/Results/Fi_01"))
+
 
 # Self-defined Scripts
 source("Functions_Pith.R")
