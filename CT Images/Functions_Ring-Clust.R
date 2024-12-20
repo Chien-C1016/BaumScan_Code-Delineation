@@ -236,7 +236,7 @@ ring.ResampleSegments <- function(df.clst,
         summarise(npts = n(),
                   Ang.min   = min(Ang.pos),
                   Ang.max   = max(Ang.pos),
-                  Ang.range = Ang.max - Ang.min + 1)
+                  Ang.range = length(unique(Ang.pos)))
       
       ## Signal
       rw.check = TRUE
