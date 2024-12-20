@@ -265,10 +265,10 @@ segment.Morph.Search <- function(ring.segments,
     #' (4) Small.Back
     #' (5) Ring.i.tempclst
     #' (6) .plotcheck
-    Big.Group  <- FALSE
     S.Flip     <- FALSE
     Tail.check <- FALSE
     Small.Back <- FALSE
+    Big.Group  <- FALSE
     .plotcheck <- .plotcheck
     Ring.i.tempclst <- as.integer(99999)
     
@@ -485,7 +485,7 @@ segment.Morph.Search <- function(ring.segments,
           big.segment.pos <- which(temp.ring.sc.sum$segment.l > segment.size)
           
           ## (01)_Tail Check ----
-          #'[00_01_Tail Check]
+          #'[01_Tail Check]
           #'@description 
           #' This section aims for big segments that close to 
           #' either edges (Edge01 & Edge02), especially for those with
@@ -574,7 +574,7 @@ segment.Morph.Search <- function(ring.segments,
           
           
           ## (02)_Segment close-by ----
-          #'[00_02 Ring.i "eats" the segments "close-by"]
+          #'[02_Ring.i "eats" the segments "close-by"]
           #'@description 
           #' Check from which side of Edges to make "close-by" search.
           #' Get targeted segment grouping if ANY.
@@ -1152,8 +1152,8 @@ segment.Morph.Search <- function(ring.segments,
           
           
           
-          ## (03)_Summary Table Adjustments ----
-          #'[00_03 Acquire "Big-Segment" Positions]
+          ## (03)_Adjustments ----
+          #'[03_Acquire "Big-Segment" Positions]
           #'Fix
           if(Tail.check != TRUE){
             big.segment.pos <- which(temp.ring.sc.sum$segment.l > segment.size)}
@@ -1214,7 +1214,7 @@ segment.Morph.Search <- function(ring.segments,
           
           
           ## (04)_Middle Check ----
-          #'[00_04_Middle Morph Check based on Big-segments]
+          #'[04_Middle Morph Check based on Big-segments]
           #'@description 
           #' If the processing step is taken into the "Middle Check Loop",
           #' this means that the "Big-Segment" is considered suspicious.
@@ -2279,8 +2279,7 @@ segment.Morph.Search <- function(ring.segments,
             
             middle.I   <- FALSE 
             middle.II  <- FALSE 
-            middle.III <- FALSE 
-            small.mid  <- FALSE
+            middle.III <- FALSE
             if(min(..keep.sum.value) < 3){ # min(.gap.l, .gap.r) < 0.5
               
               message("# Middle-Search Aligned with kept segments")
@@ -2769,6 +2768,7 @@ segment.Morph.Search <- function(ring.segments,
                 # points(ring.rm$theta,
                 #        ring.rm$dist, cex = 0.3, col = "lightblue")
                 
+                #'[Updating temp.ring.sum & big.segment.pos]
                 print("Updating temp.ring.sum & big.segment.pos")
                 
                 temp.section.r <-
@@ -2872,6 +2872,7 @@ segment.Morph.Search <- function(ring.segments,
                 message("# Acquire Searched-segments at ring.ID ",
                         .mid.big.sum$clst, " position")
                 
+                #'[Updating temp.ring.sum & big.segment.pos]
                 temp.mid.sum <-
                   temp.ring.sc %>% 
                   dplyr::filter(clst %in% morph.id) %>% 
@@ -2904,7 +2905,7 @@ segment.Morph.Search <- function(ring.segments,
                     temp.mid.sum %>% dplyr::arrange(desc(min.theta))
                 }
                 
-                #'[Method]
+                #'[Wrapped Big-Segment]
                 #'@description 
                 #' (1) Use "Big.Group" to wrap all searched segments into
                 #'     A single "Big-Segment".
@@ -2913,7 +2914,7 @@ segment.Morph.Search <- function(ring.segments,
                 # Signal
                 Big.Group.Mid <- TRUE
                 
-                # Output "Big-Segment"
+                # Update Output for "Big-Segment"
                 temp.sec.big.sum <- .mid.big.sum
                 temp.sec.big     <- 
                   ring.ck %>%
@@ -3000,10 +3001,13 @@ segment.Morph.Search <- function(ring.segments,
                 # Check
                 temp.ring.sc.sum
                 
-                # Update
+                # Update temp.section.sum
                 temp.section.sum <- temp.ring.sc.sum
                 
-                # Signal
+                # Update big.segment.pos
+                #'@note
+                #' As no need for "Big-Segments Search",
+                #' Skip such by emptying the big.segment.pos.
                 big.segment.pos <- vector()
                 
               }else{
@@ -3017,7 +3021,6 @@ segment.Morph.Search <- function(ring.segments,
           }else{
             
             # Signal
-            small.mid     <- FALSE # Method I
             Big.Group.Mid <- FALSE # Method II
             
           }
@@ -3025,7 +3028,7 @@ segment.Morph.Search <- function(ring.segments,
           
           
           ## (05)_From "Big-Segment" ----
-          #' [01_From "Big-Segment" Positions to search "Forward"]
+          #' [05_From "Big-Segment" Positions to search "Forward"]
           #' @description
           #' if Big-Segment" does not exist,
           #' the rest will be handled by "Nothing" or "No-Big-Segments"
@@ -3267,8 +3270,7 @@ segment.Morph.Search <- function(ring.segments,
             
           }else{
             
-            if(small.mid     != TRUE &
-               Big.Group.Mid != TRUE){
+            if(Big.Group.Mid != TRUE){
               
               temp.sec.big     <- ring.ck[vector(),]
               temp.sec.big.sum <- temp.ring.sc.sum[vector(),]
@@ -3279,6 +3281,9 @@ segment.Morph.Search <- function(ring.segments,
           }
           
           # Big-segment Summary Check
+          #'@note
+          #' For scenario with signal "Big.Group.Mid",
+          #' temp.sec.big.sum is reconstructed with 1 row "wrapped" sum.
           if(purrr::is_empty(temp.sec.big.sum$clst) != TRUE){
             
             # Linkage Check_dist
@@ -3826,17 +3831,7 @@ segment.Morph.Search <- function(ring.segments,
           }
           
           # Summarize the searched small segments
-          if(small.mid == TRUE){
-            
-            # Signal
-            small.mid <- FALSE
-            
-            # Small Segments already found ...
-            temp.small.sum
-            temp.small.clst
-            temp.small
-            
-          }else if(Small.Back == TRUE){ # Small.Back-control
+          if(Small.Back == TRUE){ # Small.Back-control
             
             #' [02_01_Small-Segments Grouped close to Edge.01]
             # Already searched.
@@ -4240,9 +4235,10 @@ segment.Morph.Search <- function(ring.segments,
               temp.section.sum 
               
               # Report
-              message("Huge Gap in between grouped small and big segments...keep small")
+              message("# Huge Gap in between grouped small and big segments...")
+              print("keep small")
               
-              # Big.Group Control
+              # Wrapped Big Segments Control
               if(Big.Group == TRUE |  Big.Group.Mid == TRUE){
                 
                 Big.Group <- FALSE
@@ -4648,7 +4644,8 @@ segment.Morph.Search <- function(ring.segments,
                       .ring.rm %>% 
                       rbind(., .ring.morph) %>% 
                       rbind(., .ring.i) %>% 
-                      rbind(., .ring.M)
+                      rbind(., .ring.M) %>% 
+                      segment.GroupRefine()
                     ring.rm$theta <- ring.rm$theta %>% round(digits = .digits)
                     ring.rm$clst  <- "ref"
                     
@@ -5119,8 +5116,7 @@ segment.Morph.Search <- function(ring.segments,
               
             }
             
-            # Continue with:
-            #' [Step03_Compile & Update temp.ring.sc to process the loop]
+            #' Continue with: [(04)_Compile & Update]
             
           }
           
@@ -5430,15 +5426,14 @@ segment.Morph.Search <- function(ring.segments,
             temp.ring$clst <- temp.ring$clst %>% as.character()
             ring.keep[[k]] <- temp.ring
             
-            # Continue with:
-            #' [Step03_Compile & Update temp.ring.sc to process the loop]
+            #' Continue with: [(04)_Compile & Update]
             
           }
           
           
           
           ## (04)_Compile & Update ----
-          #' [Step03_Compile & Update temp.ring.sc to process the loop]
+          #' [Compile & Update temp.ring.sc to process the loop]
           # Compile
           temp.sec.k <- rbind(temp.ring.m, temp.sec.k)
           temp.sec.k$clst <- temp.sec.k$clst %>% as.character()
