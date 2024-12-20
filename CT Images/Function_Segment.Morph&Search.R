@@ -750,6 +750,8 @@ segment.Morph.Search <- function(ring.segments,
               .ringi_closeby <- .ringi_closeby.e1[vector(),]
             }
             
+            # Get updated!!!
+            
             #'[Neighboring Morphing Search Based on ringi_closeby]
             #'@description 
             #' 
