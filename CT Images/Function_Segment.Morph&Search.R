@@ -568,6 +568,7 @@ segment.Morph.Search <- function(ring.segments,
               }
               
             }
+            
           }
           
           
@@ -749,8 +750,6 @@ segment.Morph.Search <- function(ring.segments,
             if(exists(".ringi_closeby") != TRUE){
               .ringi_closeby <- .ringi_closeby.e1[vector(),]
             }
-            
-            # Get updated!!!
             
             #'[Neighboring Morphing Search Based on ringi_closeby]
             #'@description 
