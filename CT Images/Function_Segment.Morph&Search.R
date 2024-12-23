@@ -3032,18 +3032,16 @@ segment.Morph.Search <- function(ring.segments,
           #' @description
           #' if Big-Segment" does not exist,
           #' the rest will be handled by "Nothing" or "No-Big-Segments"
-          
+          #' [01:Forward Search]
           if(purrr::is_empty(big.segment.pos) != TRUE){
             
-            #' [01_02_Forward Search]
-            # Save the found Big.Segment Summary
+            #'[01_01:Save the found Big.Segment Summary]
             temp.big.list <- list()
             
             # Fix: Ensure Data Structure
-            temp.ring.sc.sum <- 
-              temp.ring.sc.sum %>% dplyr::arrange(min.theta)
+            temp.ring.sc.sum <- temp.ring.sc.sum %>% dplyr::arrange(min.theta)
             
-            # use mean() might cause problems 
+            #'Fix: use mean() might cause problems 
             # when the segments end slightly before such position
             # In such case, search from "Edge.02" might be a better choice.
             if(Edge.01 < .border.save %>% quantile(0.45) %>% as.numeric() &
@@ -3055,7 +3053,7 @@ segment.Morph.Search <- function(ring.segments,
             
             temp.big.list[[1]] <- temp.ring.sc.sum[big.segment.pos[temp.p],]
             
-            # 01_01_Compute and find small segments in between
+            #'[01_02:Compute and find small segments in between]
             temp.big.i <- 2
             Small.Forw <- FALSE
             temp.section.sum <- temp.ring.sc.sum
@@ -3067,9 +3065,8 @@ segment.Morph.Search <- function(ring.segments,
               }else{
                 temp.sec.big.ID <- temp.big.list %>% dplyr::bind_rows()
                 temp.sec.big.ID <- temp.sec.big.ID$clst
-                temp.sec.big.ID <- 
-                  append(temp.sec.big.ID, 
-                         temp.section.sum$clst[nrow(temp.section.sum)])
+                temp.sec.big.ID <- append(temp.sec.big.ID,
+                                          temp.section.sum$clst)
               }
               
               temp.sec.big <- dplyr::filter(ring.ck, clst %in% temp.sec.big.ID)
@@ -3178,9 +3175,7 @@ segment.Morph.Search <- function(ring.segments,
               
             }
             
-            
-            
-            #' [01_03_Group Big-Segments Together - "close-by"]
+            #'[01_03:Group Big-Segments Together - "close-by"]
             # temp.sec.big.sum <- 
             #   temp.big.list %>% 
             #   dplyr::bind_rows() %>% 
@@ -3191,6 +3186,7 @@ segment.Morph.Search <- function(ring.segments,
             #' [Add-in: temp Search-flip from edge.01 to edge.02]
             if(S.Flip == TRUE){
               
+              # Acquire temp.sec.big.sum by segment.select()
               temp.sec.big.sum <- 
                 temp.big.list %>% 
                 dplyr::bind_rows() %>% 
@@ -3198,7 +3194,7 @@ segment.Morph.Search <- function(ring.segments,
                 segment.overlap(overlap.check = "All") %>% 
                 segment.select(neighbor.thres = 0.2, rev = TRUE)
               
-              # Resume the temp.sec.big
+              # Update temp.sec.big
               temp.sec.big <- 
                 ring.ck %>% dplyr::filter(clst %in% temp.sec.big.sum$clst)
               
@@ -3257,12 +3253,17 @@ segment.Morph.Search <- function(ring.segments,
               
             }else{
               
+              # Acquire temp.sec.big.sum by segment.select()
               temp.sec.big.sum <- 
                 temp.big.list %>% 
                 dplyr::bind_rows() %>% 
                 dplyr::arrange(min.theta) %>% 
                 segment.overlap(overlap.check = "All") %>% 
                 segment.select(neighbor.thres = 0.2)
+              
+              # Update temp.sec.big
+              temp.sec.big <- 
+                ring.ck %>% dplyr::filter(clst %in% temp.sec.big.sum$clst)
               
             }
             
@@ -3280,13 +3281,13 @@ segment.Morph.Search <- function(ring.segments,
             
           }
           
-          # Big-segment Summary Check
+          #' [02:Big-segment Summary Check]
           #'@note
           #' For scenario with signal "Big.Group.Mid",
           #' temp.sec.big.sum is reconstructed with 1 row "wrapped" sum.
           if(purrr::is_empty(temp.sec.big.sum$clst) != TRUE){
             
-            # Linkage Check_dist
+            #'[02_01:Linkage Check_dist]
             if(nrow(temp.sec.big.sum) != 1){
               
               .temp.big <-
@@ -3350,8 +3351,14 @@ segment.Morph.Search <- function(ring.segments,
               
             }
             
+            #'[02_02:Conditional Wrapped "grouped Big segments"]
             if(nrow(temp.sec.big.sum) != 1){
               
+              #'@description
+              #' if the code runs there, it means the "grouped Big segments"
+              #' will be wrapped together without searching in-between as
+              #' they are all close to each other.
+              #'@method
               # Signal
               Big.Group <- TRUE
               
@@ -3404,7 +3411,7 @@ segment.Morph.Search <- function(ring.segments,
           
           
           ## (06)_Find Small-Segments ----
-          #' [02_Find Small-Segments]
+          #' [06_Find Small-Segments]
           # Fine tune "temp.section.sum" as beginning
           #'@seealso : 
           #'@description:
@@ -3428,7 +3435,7 @@ segment.Morph.Search <- function(ring.segments,
             temp.section.sum <- temp.ring.sc.sum
           }
           
-          #' [02_00_Preparation]
+          #' [01:Preparation]
           #' Forward Search Only make sense if 
           #' (1) there are segments close-by
           #' (2) Big-Segments Exists (search from edge.02 is done at beginning)
@@ -3496,16 +3503,11 @@ segment.Morph.Search <- function(ring.segments,
             
           }
           
+          #'[02:Small Segments Search]
           if(Small.Back == TRUE){ # Small.Back-control
             
-            #' [02_01_Small-Segments Grouped close to Edge.01]
+            #' [02_01_Small-Segments Grouped close to either Edges]
             # Already searched.
-            
-            # temp.small.sum  <- temp.section.sum
-            # temp.small.clst <- temp.small.sum$clst
-            # temp.small      <- temp.ring.sc %>% 
-            #   dplyr::filter(., clst %in% temp.small.sum$clst)
-            # Small.Back <- FALSE
             
           }else if(purrr::is_empty(.ringi_closeby$clst) != TRUE){
             
@@ -3756,8 +3758,7 @@ segment.Morph.Search <- function(ring.segments,
             
           }
           
-          
-          # Special condition
+          #'[03:Small Segments Search | Special condition]
           #'@note:
           #' When the derived "temp.section.sum" have other clusters left,
           #' We need to check whether there are other "grouped" segments.
@@ -3765,12 +3766,6 @@ segment.Morph.Search <- function(ring.segments,
             
             #' [02_01_Small-Segments Grouped close to Edge.01]
             # Already searched.
-            
-            # temp.small.sum  <- temp.section.sum
-            # temp.small.clst <- temp.small.sum$clst
-            # temp.small      <- temp.ring.sc %>% 
-            #   dplyr::filter(., clst %in% temp.small.sum$clst)
-            # Small.Back <- FALSE
             
           }else if(purrr::is_empty(temp.section.sum$clst) != TRUE){
             
@@ -3830,7 +3825,7 @@ segment.Morph.Search <- function(ring.segments,
             
           }
           
-          # Summarize the searched small segments
+          #'[04:Summarize the searched small segments]
           if(Small.Back == TRUE){ # Small.Back-control
             
             #' [02_01_Small-Segments Grouped close to Edge.01]
@@ -3844,6 +3839,7 @@ segment.Morph.Search <- function(ring.segments,
             
           }else{
             
+            #' [04_Summarize the searched small segments]
             # Targets:
             .small.tail
             .small.middle
@@ -4189,7 +4185,7 @@ segment.Morph.Search <- function(ring.segments,
           
           
           ## (07)_Check "Gap" in-between ----
-          #' [03_Check "Gap" in-between Big-Segment and found "small-Segments"]
+          #' [07_Check "Gap" in-between Big-Segment & "small-Segments"]
           #' @description 
           #  As the small segments searching in "Big-Segment Exist"
           #  Only handles one groups of small segments,
@@ -4252,6 +4248,7 @@ segment.Morph.Search <- function(ring.segments,
           
           
           ## (08)_Last search of small segments ----
+          #' [08_Final search on any possible groups of segments]
           #'@special
           #' When "temp.sec.big.sum" & "temp.small.sum" are EMPTY
           #' However, in the "temp.ring.sc.sum" is not EMPTY,
@@ -4545,7 +4542,6 @@ segment.Morph.Search <- function(ring.segments,
                   # Target .mid.big assigned... ABOVE
                   .mid.big.sum 
                   
-                  ####DEV----
                   #'[Forced:Small-Middle.Search]
                   mid.big.id   <- .mid.big.sum$clst
                   mid.big.df   <- ring.ck %>% filter(clst %in% mid.big.id)
