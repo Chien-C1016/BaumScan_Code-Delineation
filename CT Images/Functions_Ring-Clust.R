@@ -292,7 +292,7 @@ ring.ResampleSegments <- function(df.clst,
     
     # Smooth.spline ----
     if(rs.rs$Ang.range <= AngularPositionUse |
-       rs.rs$Ang.npts < 20){
+       rs.rs$Ang.npts < 20 & rs.rs$Ang.range < n.theta){
       ## Small Ring Segments ----
       
       # Fix
