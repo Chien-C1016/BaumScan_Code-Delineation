@@ -2054,7 +2054,7 @@ segment.Morph.Search <- function(ring.segments,
                     ...ring.keep %>% 
                     dplyr::filter(clst %in% ..clst) %>% 
                     dplyr::filter(theta < ..rb) %>% 
-                    dplyr::filter(theta > min(..theta)) %>%
+                    dplyr::filter(theta >= min(..theta)) %>%
                     dplyr::mutate(delta = abs(dist - dist.ref)) %>% 
                     dplyr::arrange(delta) %>% 
                     dplyr::slice(c(1:round(npts.range*n())))
@@ -2083,7 +2083,7 @@ segment.Morph.Search <- function(ring.segments,
                     ...ring.keep %>% 
                     dplyr::filter(clst %in% ..clst) %>% 
                     dplyr::filter(theta > ..lb) %>% 
-                    dplyr::filter(theta < max(..theta)) %>%
+                    dplyr::filter(theta <= max(..theta)) %>%
                     dplyr::mutate(delta = abs(dist - dist.ref)) %>% 
                     dplyr::arrange(delta) %>% 
                     dplyr::slice(c(1:round(npts.range*n())))
