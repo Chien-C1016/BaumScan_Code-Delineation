@@ -1557,7 +1557,7 @@ segment.Morph.Search <- function(ring.segments,
                   # stop("Condition Check ... Reverse-Search")
                   
                   # Signal Report
-                  message("# Middle-Check... Reverse-Results Acquired.")
+                  message("# Middle-Check ... Reverse-Results Acquired.")
                   result.update <- FALSE
                   
                   # Use Results directly from "middle.check"
@@ -1574,7 +1574,7 @@ segment.Morph.Search <- function(ring.segments,
                   morph.id <- save.diff.id
                   
                   # Signal Report
-                  message("# Middle-Check... Reverse-Results Dedined.")
+                  message("# Middle-Check... Reverse-Results Denied.")
                   result.update <- TRUE
                   
                 }
@@ -2869,11 +2869,12 @@ segment.Morph.Search <- function(ring.segments,
                 
               }else if(mean(abs(..ring.i.sum$delta)) <= 3){
                 
-                message("# Acquire Searched-segments at ring.ID ",
-                        .mid.big.sum$clst, " position")
-                
-                #'[Updating temp.ring.sum & big.segment.pos]
-                temp.mid.sum <-
+                #'[Fix]
+                #'@details
+                #' The "Middle search might end up with 
+                #' Empty segments (No segments within Edge.01 & Edge.02) 
+                #' due to rev.middle search. Hence, a fix is a mist.
+                .temp.mid.sum <-
                   temp.ring.sc %>% 
                   dplyr::filter(clst %in% morph.id) %>% 
                   # ring.join(., ..ring.i) %>% 
@@ -2882,67 +2883,99 @@ segment.Morph.Search <- function(ring.segments,
                   ring.join(., ring.segment = ring.m) %>% 
                   dplyr::mutate(., delta = abs(dist - dist.Morph)) %>% 
                   dplyr::group_by(clst) %>% 
-                  dplyr::arrange(delta) %>% 
-                  dplyr::summarise(npts      = n(),
-                                   ..npts    = round(0.2*npts),
-                                   m.delta   = mean(delta[1:..npts]),
-                                   sd.delta  = sd  (delta[1:..npts]),
-                                   max.theta = max(theta),
-                                   min.theta = min(theta),
-                                   dist.l    = dist[which.min(theta)],
-                                   dist.r    = dist[which.max(theta)]) %>%
-                  dplyr::select(-..npts) %>%  
-                  dplyr::left_join(., lookup.SUM, by = "clst") %>% 
-                  dplyr::arrange(min.theta) %>% 
-                  as.data.frame()
+                  dplyr::arrange(delta) 
                 
-                # temp.ring.sc.sum
-                if(S.Flip != TRUE){
-                  temp.ring.sc.sum <- 
-                    temp.mid.sum %>% dplyr::arrange(min.theta)
-                }else{
-                  temp.ring.sc.sum <- 
-                    temp.mid.sum %>% dplyr::arrange(desc(min.theta))
-                }
-                
-                #'[Wrapped Big-Segment]
-                #'@description 
-                #' (1) Use "Big.Group" to wrap all searched segments into
-                #'     A single "Big-Segment".
-                #' (2) Create temp.ring.sc.sum for further small segment search.
-                
-                # Signal
-                Big.Group.Mid <- TRUE
-                
-                # Update Output for "Big-Segment"
-                temp.sec.big.sum <- .mid.big.sum
-                temp.sec.big     <- 
-                  ring.ck %>%
-                  dplyr::filter(clst %in% temp.ring.sc.sum$clst)
-                
-                ..mid.big <-
-                  .mid.big %>% 
-                  dplyr::filter(theta > (min(temp.sec.big$theta) - .M.Step)) %>% 
-                  dplyr::filter(theta < (max(temp.sec.big$theta) + .M.Step))
-                temp.mid.sum <- temp.ring.sc.sum # With Direction
-                
-                # Re-build "temp.ring.sc.sum" for small-search
-                if(S.Flip != TRUE){
+                #'[Updating temp.ring.sum & big.segment.pos]
+                if(purrr::is_empty(.temp.mid.sum$clst)){
                   
-                  .Edge.01  = Edge.01
-                  .Edge.02  = min(temp.sec.big$theta)
-                  .dist.01  = dist.01
-                  .dist.02  = temp.sec.big$dist[which.min(temp.sec.big$theta)]
+                  #'[No Mid.searched Segments within search edges]
+                  #' Update temp.ring.sc.sum for further small segment search.
+                  
+                  # Signal
+                  message("# No Proper Segments within the searched range...")
+                  
+                  # Signal
+                  Big.Group.Mid <- FALSE
+                  
+                  # Required info
+                  .Edge.01 <- Edge.01
+                  .Edge.02 <- Edge.02
+                  .dist.01 <- dist.01
+                  .dist.02 <- dist.02
                   
                 }else{
                   
-                  .Edge.01  = max(temp.sec.big$theta)
-                  .Edge.02  = Edge.02
-                  .dist.01  = temp.sec.big$dist[which.max(temp.sec.big$theta)]
-                  .dist.02  = dist.02
+                  #'[Wrapped Big-Segment]
+                  #'@description 
+                  #' (1) Use "Big.Group.Mid" to 
+                  #'     wrap all searched segments into single "Big-Segment".
+                  #' (2) Later Update temp.ring.sc.sum for further 
+                  #'     small segment search.
+                  
+                  # Signal
+                  message("# Acquire Searched-segments at ring.ID ",
+                          .mid.big.sum$clst, " position")
+                  
+                  # Signal
+                  Big.Group.Mid <- TRUE
+                  
+                  # temp.ring.sc.sum
+                  temp.mid.sum <- 
+                    .temp.mid.sum %>% 
+                    dplyr::summarise(npts      = n(),
+                                     ..npts    = round(0.2*npts),
+                                     m.delta   = mean(delta[1:..npts]),
+                                     sd.delta  = sd  (delta[1:..npts]),
+                                     max.theta = max(theta),
+                                     min.theta = min(theta),
+                                     dist.l    = dist[which.min(theta)],
+                                     dist.r    = dist[which.max(theta)]) %>%
+                    dplyr::select(-..npts) %>%  
+                    dplyr::left_join(., lookup.SUM, by = "clst") %>% 
+                    dplyr::arrange(min.theta) %>% 
+                    as.data.frame()
+                  
+                  # temp.ring.sc.sum
+                  if(S.Flip != TRUE){
+                    temp.ring.sc.sum <- 
+                      temp.mid.sum %>% dplyr::arrange(min.theta)
+                  }else{
+                    temp.ring.sc.sum <- 
+                      temp.mid.sum %>% dplyr::arrange(desc(min.theta))
+                  }
+                  
+                  # Update Output for "Big-Segment"
+                  temp.sec.big.sum <- .mid.big.sum
+                  temp.sec.big     <- 
+                    ring.ck %>%
+                    dplyr::filter(clst %in% temp.ring.sc.sum$clst)
+                  
+                  ..mid.big <-
+                    .mid.big %>% 
+                    dplyr::filter(theta>(min(temp.sec.big$theta)-.M.Step)) %>% 
+                    dplyr::filter(theta<(max(temp.sec.big$theta)+.M.Step))
+                  temp.mid.sum <- temp.ring.sc.sum # With Direction
+                  
+                  # Re-build "temp.ring.sc.sum" for small-search
+                  if(S.Flip != TRUE){
+                    
+                    .Edge.01  = Edge.01
+                    .Edge.02  = min(temp.sec.big$theta)
+                    .dist.01  = dist.01
+                    .dist.02  = temp.sec.big$dist[which.min(temp.sec.big$theta)]
+                    
+                  }else{
+                    
+                    .Edge.01  = max(temp.sec.big$theta)
+                    .Edge.02  = Edge.02
+                    .dist.01  = temp.sec.big$dist[which.max(temp.sec.big$theta)]
+                    .dist.02  = dist.02
+                    
+                  }
                   
                 }
                 
+                #' Update temp.ring.sc.sum
                 temp.rm <- Section.Morph(Edge.01  = .Edge.01,
                                          Edge.02  = .Edge.02,
                                          dist.01  = .dist.01,
@@ -3008,7 +3041,16 @@ segment.Morph.Search <- function(ring.segments,
                 #'@note
                 #' As no need for "Big-Segments Search",
                 #' Skip such by emptying the big.segment.pos.
-                big.segment.pos <- vector()
+                if(Big.Group.Mid == TRUE){
+                  
+                  big.segment.pos <- vector()
+                  
+                }else{
+                  
+                  big.segment.pos <- 
+                    which(temp.ring.sc.sum$segment.l > segment.size)
+                  
+                }
                 
               }else{
                 
@@ -3391,8 +3433,9 @@ segment.Morph.Search <- function(ring.segments,
                 if((group.i+1) > nrow(temp.sec.big.sum)){break}
                 
               }
-              temp.group.morph      <- group.morph %>% dplyr::bind_rows()
-              temp.group.morph$clst <- "Morph.B"
+              temp.group.morph <- group.morph %>% dplyr::bind_rows()
+              if(purrr::is_empty(temp.group.morph$clst) != TRUE){
+                temp.group.morph$clst <- "Morph.B"}
               
               # Plot Check
               if(.plotcheck == TRUE){
@@ -6287,7 +6330,11 @@ segment.Morph.Search <- function(ring.segments,
             
           }
           
-        }else{message("Nothing Left for Morph-Search ... Size")}
+        }else{
+          
+          message("Nothing Left for Morph-Search ... Size")
+          
+        }
         
         # Update
         ni <- nrow(ring.SUM)
@@ -6463,10 +6510,12 @@ segment.Morph.Search <- function(ring.segments,
           #'[Keys]
           vote.pos
           vote.det
+          # Are there hold positions having same votes?
           multiple_votes <- 
             vote.sum %>%
             dplyr::filter(hold.vote != 0, count == vote.hold) %>%
             nrow() > 1
+          # Is hold position's dist the minimum?
           vote.pos.min <- 
             if (any(vote.det >= 0.9)) {
               hold.dist[vote.pos] < min(hold.dist[vote.det >= 0.9])
@@ -6475,55 +6524,41 @@ segment.Morph.Search <- function(ring.segments,
           # ------------------------------------------------------------------ #
           
           #'[Decision]
-          if(all(vote.pos.min == TRUE)){
+          if(vote.pos.min == TRUE){
             
             # Signal
             message("[Det]: Determined by vote's distance to reference")
             
-            
-            
           }else if(any(vote.det >= 0.9)){
             
-            #'[hold.det >= 0.9, Other independent ring structure]
+            #'[Other Independent Inner Ring Structure]
+            #' Only when there's independent inner rings,
+            #' this section will be activated.
+            #'@details
+            #'(1) hold.det >= 0.9
+            #'(2) all(vote.pos.min != TRUE): There's independent inner rings.
             
-            # Independent others (Tree Ring Structures)
-            .ck.pos <- which(vote.det >= 0.9)
+            #' Independent *Inner* Tree Rings
+            #' *More than 1 structures might be recognized:*
+            #'[Fix]
+            # Sort independent structures by *vote.hold & hold.dist*
+            # (1) vote.det >= 0.9
+            # (2) hold.dist < hold.dist [vote.pos] (closer to ring.2)
+            #'[Note] 
+            # To reduce the number of tree rings taken, 
+            #' *only the one with max( vote.det ) will be taken.*
+            # (Assume that no extreme narrow rings within one search)
+            .ck.det <- (vote.det >= 0.9) & (hold.dist < hold.dist[vote.pos])
+            .ck.pos <- which.max(vote.det * .ck.det) 
             
             # Signal
             message("[Det]: Other Independent Tree Ring Structure Found")
             print(.ck.pos)
             
-            # More than 1 structures recognized:
-            if(length(.ck.pos)>1){
-              
-              # Independent Positions:
-              ind.pos <- append(vote.pos, .ck.pos) %>% sort()
-              
-              # Start Coding with which.max only return 1 value:
-              .ck.pos <- which.max(vote.det) 
-              
-              # Update det value based on .ck.pos
-              .det.list <- segment.DetHold(target.ring  = hold.keep [[.ck.pos]],
-                                           target.morph = hold.morph[[.ck.pos]],
-                                           hold.id      = hold.id, 
-                                           hold.morph   = hold.morph,
-                                           check.segments = ring.ck,
-                                           ReSample.Size  = ReSample.Size)
-              .det      <- .det.list$hold.det
-              .sum.list <- .det.list$hold.sum.list
-              
-              # Re-select independent segments based on .ck.pos
-              .pick.pos <- which(.det >= 0.9)
-              .pick.ind <- append(.ck.pos, .pick.pos) %>% sort()
-              
-              # More than 1 structures recognized:
-              if(identical(as.integer(ind.pos), as.integer(.pick.ind))){
-                stop("[Note]: More than 1 structures recognized")}
-              
-            }
-            
-            # Final hold.dist Assure
+            # Assure Final hold.dist 
             if(hold.dist[.ck.pos] < hold.dist[vote.pos]){
+              
+              #' *NORMALLY* This should be passed...
               
               # Unique clst structure of .ck.pos
               hold.id     [[.ck.pos]] <- 
@@ -6538,15 +6573,19 @@ segment.Morph.Search <- function(ring.segments,
                                name.write = "ref",
                                Morph.step = ReSample.Size)
               
-              # if vote.pos has over 50% votes of the remaining votes
-              vote.ck <- 
+              #'[Decision of vote.pos] 
+              #' if it has 
+              #'(1) over 50% votes of the remaining votes; or
+              #'(2) over 70% vote quantile of the vote results.
+              vote.res <-
                 hold.clst.ck[hold.clst.ck != 0] %>%
                 table() %>%
-                as.numeric() %>%
-                .[.ck.pos]
-              vote.remain <- length(which(hold.clst.ck != 0)) - vote.ck
-              vote.ratio  <- vote.hold / vote.remain
-              if(vote.ratio > 0.5){
+                as.numeric()
+              vote.ck       <- vote.res[.ck.pos]
+              vote.remain   <- length(which(hold.clst.ck != 0)) - vote.ck
+              vote.ratio    <- vote.hold / vote.remain
+              vote.quantile <- vote.res %>% quantile(0.7) %>% unname()
+              if(vote.ratio > 0.5 | vote.hold > vote.quantile){
                 
                 # Signal
                 message("# Both Tree Ring Structures Acquired...")
@@ -6567,7 +6606,7 @@ segment.Morph.Search <- function(ring.segments,
               
             }else{
               
-              #' *NORMALLY* This should not happen
+              #' *NORMALLY* This should not happen...
               stop("[Note]: Other Independent Structure is further...")
               
             }
@@ -6771,7 +6810,7 @@ segment.Morph.Search <- function(ring.segments,
     }
     
     # ------------------------------------------------------------------------ #
-    # ___I_END -------------------------------------------------------------- 
+    # ___I_END --------------------------------------------------------------- 
     # ------------------------------------------------------------------------ #
     
     # Output Complete-Ring Result
@@ -6786,7 +6825,7 @@ segment.Morph.Search <- function(ring.segments,
   }
   
   # -------------------------------------------------------------------------- #
-  # ___II_END -------------------------------------------------------------
+  # ___II_END ----------------------------------------------------------------
   # -------------------------------------------------------------------------- #
   
   # Output
