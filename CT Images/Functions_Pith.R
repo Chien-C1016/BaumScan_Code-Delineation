@@ -378,7 +378,7 @@ pith.GetPith <- function(df, df.db, im.make = F, im = NULL){
 pith.ExtractPith <- function(df.getpith){
   
   # As the input will be a list by im.make = TRUE
-  if(is.list(df.getpith) == TRUE){
+  if(is.list(df.getpith) == TRUE & is.data.frame(df.getpith) != TRUE){
     df.getpith <- df.getpith$df.pith
   }
   
