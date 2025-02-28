@@ -330,8 +330,21 @@ RingDistance <- function(Target.ring,
       
     }else if(purrr::is_empty(spline.df)){
       
-      sp.tr <- smooth.spline(x = tr.i$x, y = tr.i$y)
-      sp.nr <- smooth.spline(x = nr.i$x, y = nr.i$y)
+      # smooth.spline df auto (This might cause over fitting)
+      # sp.tr <- smooth.spline(x = tr.i$x, y = tr.i$y)
+      # sp.nr <- smooth.spline(x = nr.i$x, y = nr.i$y)
+      
+      if(length(unique(tr.i$x)) < 100 | length(unique(nr.i$x)) < 100){
+        
+        sp.tr <- smooth.spline(x = tr.i$x, y = tr.i$y, df = 3)
+        sp.nr <- smooth.spline(x = nr.i$x, y = nr.i$y, df = 3)
+        
+      }else{
+        
+        sp.tr <- smooth.spline(x = tr.i$x, y = tr.i$y, df = 5)
+        sp.nr <- smooth.spline(x = nr.i$x, y = nr.i$y, df = 5)
+        
+      }
       
     }else{
       
