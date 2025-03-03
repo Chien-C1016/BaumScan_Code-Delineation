@@ -496,7 +496,7 @@ RingDistance <- function(Target.ring,
       if(any(is.na(tn.cos)) | any(tn.dist == 0)){
         
         det.cos <- 1
-        det.tnp <- 0
+        det.tnp <- which.min(tn.dist)
         
       }else{
         
