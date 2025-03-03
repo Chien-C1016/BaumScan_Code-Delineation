@@ -11,12 +11,27 @@ setwd ("~/Data")
 
 source("~/Data/Scripts/CT Images/Functions_Pith.R")
 source("~/Data/Scripts/CT Images/Functions_Ring-Clust.R")
+source("~/Data/Scripts/CT Images/Functions_Ring-Edge.R")
+source("~/Data/Scripts/CT Images/Ring Distance Computation.R")
+source("~/Data/Scripts/CT Images/Functions_Data Conversion.R")
+
 
 res <- 0.15 # mm
 
 # ---------------------------------------------------------------------------- #
 #'[Read_Data:]
 #'*Sequence Read_Data: Fi-Ki-La*
+#'[IMG_Moisture-Preserved Stem Discs]
+# Specify the directory path
+data_path <- paste0(Dir, "/IMG")
+# Sapwood Data
+list_files <- list.files(path = data_path, 
+                         pattern = "^[A-Z][a-z]-0[1-5]\\.tif$",
+                         full.names = TRUE)
+print(list_files)
+
+IMG_data <- lapply(list_files, OpenImageR::readImage)
+
 #'[Pith_Algorithm]
 # Specify the directory path
 data_path <- paste0(Dir, "/Algorithm/Pith")
@@ -56,7 +71,10 @@ list_files <- list.files(path = data_path,
                         full.names = TRUE)
 print(list_files)
 
-TRA_data <- lapply(list_files, read.csv)
+TRA_data <- purrr::map2(list_files, IMG_data, ~.x %>% 
+                          read.csv() %>% 
+                          Ij2R(., im.matrix = .y) %>% 
+                          purrr::pluck(., "rings.R"))
 
 #'[Tree_Ring_Manual]
 # Specify the directory path
@@ -67,7 +85,10 @@ list_files <- list.files(path = data_path,
                          full.names = TRUE)
 print(list_files)
 
-TRM_data <- lapply(list_files, read.csv)
+TRM_data <- purrr::map2(list_files, IMG_data, ~.x %>% 
+                          read.csv() %>% 
+                          Ij2R(., im.matrix = .y) %>% 
+                          purrr::pluck(., "rings.R"))
 
 #'[Sapwood_Algorithm]
 # Specify the directory path
@@ -78,7 +99,10 @@ list_files <- list.files(path = data_path,
                          full.names = TRUE)
 print(list_files)
 
-SWA_data <- lapply(list_files, read.csv)
+SWA_data <- purrr::map2(list_files, IMG_data, ~.x %>% 
+                          read.csv() %>% 
+                          Ij2R(., im.matrix = .y) %>% 
+                          purrr::pluck(., "rings.R"))
 
 #'[Sapwood_Manual]
 # Specify the directory path
@@ -89,18 +113,10 @@ list_files <- list.files(path = data_path,
                          full.names = TRUE)
 print(list_files)
 
-SWM_data <- lapply(list_files, read.csv)
-
-#'[IMG_Moisture-Preserved Stem Discs]
-# Specify the directory path
-data_path <- paste0(Dir, "/IMG")
-# Sapwood Data
-list_files <- list.files(path = data_path, 
-                         pattern = "^[A-Z][a-z]-0[1-5]\\.tif$",
-                         full.names = TRUE)
-print(list_files)
-
-IMG_data <- lapply(list_files, OpenImageR::readImage)
+SWM_data <- purrr::map2(list_files, IMG_data, ~.x %>% 
+                          read.csv() %>% 
+                          Ij2R(., im.matrix = .y) %>% 
+                          purrr::pluck(., "rings.R"))
 
 # ---------------------------------------------------------------------------- #
 #'[Sequence_DiscID:]
@@ -171,6 +187,33 @@ performance_Pith %>%
 # ---------------------------------------------------------------------------- #
 # Performance_Tree_Rings ----
 #'[Performance_Tree_Rings:]
+# Calculating the Accuracy of each Tree Rings
+Disc.ID = 1
+n.disc  = length(TRA_data)
+performance_TR <- list()
+while (TRUE) {
+  
+  data.list <- list(TRA_data[[Disc.ID]], 
+                    TRM_data[[Disc.ID]], 
+                    seq_along(TRA_data[[Disc.ID]]))
+  
+  performance_TR[[Disc.ID]] <-
+    purrr::pmap(data.list,
+                ~ RingDistance(Target.ring = ..1, 
+                               Next.ring   = ..2, 
+                               center = c(PM_data[[Disc.ID]]$x, 
+                                          PM_data[[Disc.ID]]$y)) %>% 
+                  dplyr::mutate(Ring.ID = ..3)) %>% 
+    dplyr::bind_rows() %>% 
+    dplyr::mutate(Species = seq_disc[Disc.ID],
+                  Disc.ID = num_disc[Disc.ID],
+                  Ring.dist = Ring.dist * res)
+  
+  # loop-control
+  Disc.ID = Disc.ID + 1
+  if(Disc.ID > n.disc){break}
+  
+} 
 
 
 
@@ -179,7 +222,36 @@ performance_Pith %>%
 
 
 
-
+# ---------------------------------------------------------------------------- #
+# Performance_Sapwood ----
+#'[Performance_Sapwood:]
+# Calculating the Accuracy of each Sapwood Boundaries
+Disc.ID = 1
+n.disc  = length(SWA_data)
+performance_SW <- list()
+while (TRUE) {
+  
+  data.list <- list(SWA_data[[Disc.ID]], 
+                    SWM_data[[Disc.ID]], 
+                    seq_along(SWA_data[[Disc.ID]]))
+  
+  performance_SW[[Disc.ID]] <-
+    purrr::pmap(data.list,
+                ~ RingDistance(Target.ring = ..1, 
+                               Next.ring   = ..2, 
+                               center = c(PM_data[[Disc.ID]]$x, 
+                                          PM_data[[Disc.ID]]$y)) %>% 
+                  dplyr::mutate(Ring.ID = ..3)) %>% 
+    dplyr::bind_rows() %>% 
+    dplyr::mutate(Species = seq_disc[Disc.ID],
+                  Disc.ID = num_disc[Disc.ID],
+                  Ring.dist = Ring.dist * res)
+  
+  # loop-control
+  Disc.ID = Disc.ID + 1
+  if(Disc.ID > n.disc){break}
+  
+} 
 
 
 

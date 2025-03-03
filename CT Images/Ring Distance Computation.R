@@ -193,6 +193,14 @@ RingDistance <- function(Target.ring,
   
   # -------------------------------------------------------------------------- #
   #'[Data_Preparation:]
+  # Check the data structure
+  if(is.data.frame(Target.ring)!=TRUE){
+    Target.ring <- Target.ring %>% unname() %>% as.data.frame()
+  }
+  if(is.data.frame(Next.ring)!=TRUE){
+    Next.ring <- Next.ring %>% unname() %>% as.data.frame()
+  }
+  
   # Check the column names
   # especially when they are from ImageJ
   if(all(c("x", "y") %in% names(Target.ring)) != TRUE |
@@ -484,8 +492,18 @@ RingDistance <- function(Target.ring,
       tn.vecm <- nr.fit - tr.pim
       tn.cos  <- rowSums(tr.vecm * tn.vecm) / ((tn.dist)* sqrt(sum(tr.vvec^2)))
       
-      det.cos <- max(abs(tn.cos))
-      det.tnp <- which.max(abs(tn.cos))
+      #'[Fix 2-points overlapped]
+      if(any(is.na(tn.cos)) | any(tn.dist == 0)){
+        
+        det.cos <- 1
+        det.tnp <- 0
+        
+      }else{
+        
+        det.cos <- max(abs(tn.cos))
+        det.tnp <- which.max(abs(tn.cos))
+        
+      }
       
       if(j > 3){ 
         
@@ -494,7 +512,7 @@ RingDistance <- function(Target.ring,
         
       }else if(det.cos < 0.9995){
         
-        j = j+1
+        j = j + 1
         .step   = 10^(-j)
         .search = 10*.step
         # Update tr.pi for the search range change in nr
