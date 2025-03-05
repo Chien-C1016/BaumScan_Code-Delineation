@@ -131,6 +131,12 @@ num_disc <-
   append(., c(1:5))
 
 # ---------------------------------------------------------------------------- #
+#'[Species_Code:]
+Species.ID <- c("All", "Spruce", "Pine", "Larch")
+Color.code <- c("dodgerblue4", "tomato3", "aquamarine4", "goldenrod1")
+Species.col <- setNames(Color.code, Species.ID)
+
+# ---------------------------------------------------------------------------- #
 # Performance_Pith ----
 #'[Performance_Pith:]
 performance_Pith <-
@@ -146,6 +152,8 @@ performance_Pith <-
   dplyr::mutate(dx = dx * res,
                 dy = dy * res,
                 dist = dist * res)
+
+saveRDS(performance_Pith, file = "performance_Pith.RData")
 
 # Descriptive stats
 mean_x <- performance_Pith$dx %>% mean()
@@ -164,8 +172,12 @@ sum_species <-
 
 # Figure
 performance_Pith %>% 
+  dplyr::mutate(seq_disc = factor(seq_disc, levels = Species.ID)) %>% 
   ggplot(., aes(x = dx, y = dy, color = seq_disc)) +
-  geom_point(size = 3, alpha = 0.7) +  # Semi-transparent points for visibility
+  # Semi-transparent points for visibility
+  geom_point(size = 3, alpha = 0.7) + 
+  # Self-define color-code
+  scale_color_manual(values = Species.col) +
   theme_minimal() +  # Minimalistic theme
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
@@ -215,12 +227,68 @@ while (TRUE) {
   
 } 
 
+saveRDS(performance_TR, file = "performance_TR.RData")
 
+## Figure ----
+df_PTR <-
+  performance_TR %>% 
+  purrr::map(., ~ .x %>% 
+               dplyr::mutate(clst = Ring.ID) %>% 
+               ring.RelativeDist(ring.TRW = .,
+                                 Target.ID = 1,
+                                 .keep = TRUE) %>% 
+               dplyr::select(-clst)) %>% 
+  dplyr::bind_rows()
 
+.df <- df_PTR %>% dplyr::mutate(Species = "All")
+.df_PTR <- 
+  rbind(.df, df_PTR) %>% 
+  dplyr::mutate(Species = factor(Species, levels = Species.ID)) 
 
+# Overall
+Error_TRW <- 
+  .df_PTR %>% 
+  ggplot(.) +
+  
+  # Density Plot
+  ggdensity::geom_hdr(aes(x = relative.position, 
+                          y = Ring.dist,
+                          fill = Species),
+                      probs = c(0.85, 0.70, 0.5, 0.20, 0.10),
+                      show.legend = c(alpha = TRUE)) +
+  
+  # Add horizontal line at the mean of y for each facet
+  geom_hline(data = .df_PTR %>%
+               dplyr::group_by(Species) %>%
+               dplyr::summarise(y_mean = mean(Ring.dist)), 
+             aes(yintercept = y_mean), 
+             color = "tomato3", linetype = "dashed") +
+  
+  # Self-define color-code
+  scale_fill_manual(values = Species.col) + 
+  
+  # Fix Y-Axis from 0 to 3
+  scale_y_continuous(limits = c(0, 3)) +  
+  
+  theme_minimal() + 
+  labs(x = "Relative Position to Pith", 
+       y = "Error (mm)") +
+  theme(legend.position = "right",
+        legend.text  = element_text(size = 12),
+        legend.title = element_text(size = 12, face = "bold"),
+        #panel.grid.major = element_blank(),  # Remove major grid lines
+        panel.grid.minor = element_blank(),  # Remove minor grid lines
+        axis.text  = element_text(size = 12),  
+        axis.title = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 5)),
+        axis.title.y = element_text(margin = margin(r = 5)),
+        
+        strip.text = element_text(size = 12, face = "bold"),
+        panel.spacing = unit(2, "lines")) +
+  
+  facet_wrap(~Species, ncol = 2)
 
-
-
+Error_TRW
 
 # ---------------------------------------------------------------------------- #
 # Performance_Sapwood ----
@@ -253,6 +321,68 @@ while (TRUE) {
   
 } 
 
+saveRDS(performance_SW, file = "performance_SW.RData")
+
+## Figure ----
+df_PSW <-
+  performance_SW %>% 
+  purrr::map(., ~ .x %>% 
+               dplyr::mutate(clst = Ring.ID) %>% 
+               ring.RelativeDist(ring.TRW = .,
+                                 Target.ID = 2,
+                                 .keep = TRUE) %>% 
+               dplyr::select(-clst)) %>% 
+  dplyr::bind_rows()
+
+.df <- df_PSW %>% dplyr::mutate(Species = "All")
+.df_PSW <- 
+  rbind(.df, df_PSW) %>% 
+  dplyr::mutate(Species = factor(Species, levels = Species.ID)) 
+
+# Overall
+Error_SW <- 
+  .df_PSW %>% 
+  ggplot(.) +
+  
+  # Density Plot
+  ggdensity::geom_hdr(aes(x = relative.position, 
+                          y = Ring.dist,
+                          fill = Species),
+                      probs = c(0.85, 0.70, 0.5, 0.20, 0.10),
+                      show.legend = c(alpha = TRUE)) +
+  
+  # Add horizontal line at the mean of y for each facet
+  geom_hline(data = .df_PSW %>%
+               dplyr::group_by(Species) %>%
+               dplyr::summarise(y_mean = mean(Ring.dist)), 
+             aes(yintercept = y_mean), 
+             color = "tomato3", linetype = "dashed") +
+  
+  # Self-define color-code
+  scale_fill_manual(values = Species.col) + 
+  
+  # Fix Y-Axis from 0 to 3
+  # scale_y_continuous(limits = c(0, 3)) +  
+  
+  theme_minimal() + 
+  labs(x = "Relative Position to Pith", 
+       y = "Error (mm)") +
+  theme(legend.position = "right",
+        legend.text  = element_text(size = 12),
+        legend.title = element_text(size = 12, face = "bold"),
+        #panel.grid.major = element_blank(),  # Remove major grid lines
+        panel.grid.minor = element_blank(),  # Remove minor grid lines
+        axis.text  = element_text(size = 12),  
+        axis.title = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 5)),
+        axis.title.y = element_text(margin = margin(r = 5)),
+        
+        strip.text = element_text(size = 12, face = "bold"),
+        panel.spacing = unit(2, "lines")) +
+  
+  facet_wrap(~Species, ncol = 2)
+
+Error_SW
 
 
 

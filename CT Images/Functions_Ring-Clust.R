@@ -851,7 +851,7 @@ ring.RelativeDist <- function(ring.TRW,
     if(is.list(ring.TRW)){
       ring.TRW <- ring.TRW %>% dplyr::bind_rows()
     }else{
-      stop("Error: 'A data.frame' or 'List' is expected")
+      ring.TRW <- ring.TRW %>% as.data.frame()
     }
     
   }
@@ -876,7 +876,7 @@ ring.RelativeDist <- function(ring.TRW,
     ring.TRW %>% 
     dplyr::select("theta") %>% 
     dplyr::mutate(theta = round(theta, digits = 4)) %>% 
-    dplyr::left_join(., Ring.ref[, c("theta", "dist")])
+    dplyr::left_join(., Ring.ref[, c("theta", "dist")], by = "theta")
   .ring.TRW <-
     ring.TRW %>% 
     dplyr::mutate(dist.ref = temp.df$dist,
