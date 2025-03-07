@@ -272,7 +272,7 @@ Error_TRW <-
   
   theme_minimal() + 
   labs(x = "Relative Position to Pith", 
-       y = "Error (mm)") +
+       y = "Absolute Error (mm)") +
   theme(legend.position = "right",
         legend.text  = element_text(size = 12),
         legend.title = element_text(size = 12, face = "bold"),
@@ -334,6 +334,8 @@ df_PSW <-
                dplyr::select(-clst)) %>% 
   dplyr::bind_rows()
 
+## ' Case-01: Pool "All" data ----
+#'[Size:751*908]
 .df <- df_PSW %>% dplyr::mutate(Species = "All")
 .df_PSW <- 
   rbind(.df, df_PSW) %>% 
@@ -366,7 +368,7 @@ Error_SW <-
   
   theme_minimal() + 
   labs(x = "Relative Position to Pith", 
-       y = "Error (mm)") +
+       y = "Absolute Error (mm)") +
   theme(legend.position = "right",
         legend.text  = element_text(size = 12),
         legend.title = element_text(size = 12, face = "bold"),
@@ -381,6 +383,61 @@ Error_SW <-
         panel.spacing = unit(2, "lines")) +
   
   facet_wrap(~Species, ncol = 2)
+
+Error_SW
+
+## ' Case-02: Only display Species data ----
+#'[Size:1075*465]
+.df_PSW <- 
+  df_PSW %>% 
+  dplyr::mutate(Species = factor(Species, levels = Species.ID))
+
+# Overall
+Error_SW <- 
+  .df_PSW %>% 
+  ggplot(.) +
+  
+  # Density Plot
+  ggdensity::geom_hdr(aes(x = relative.position, 
+                          y = Ring.dist,
+                          fill = Species),
+                      probs = c(0.85, 0.70, 0.5, 0.20, 0.10),
+                      show.legend = c(alpha = TRUE)) +
+  
+  # Add horizontal line at the mean of y for each facet
+  geom_hline(data = .df_PSW %>%
+               dplyr::group_by(Species) %>%
+               dplyr::summarise(y_mean = mean(Ring.dist)), 
+             aes(yintercept = y_mean), 
+             color = "tomato3", linetype = "dashed") +
+  
+  # Self-define color-code
+  scale_fill_manual(values = Species.col) + 
+  
+  # Fix Y-Axis from 0 to 3
+  # scale_y_continuous(limits = c(0, 3)) +  
+  
+  theme_minimal() + 
+  labs(x = "Relative Position to Pith", 
+       y = "Absolute Error (mm)") +
+  theme(legend.position = "right",
+        legend.text  = element_text(size = 12),
+        legend.title = element_text(size = 12, face = "bold"),
+        #panel.grid.major = element_blank(),  # Remove major grid lines
+        panel.grid.minor = element_blank(),  # Remove minor grid lines
+        axis.text  = element_text(size = 12),  
+        axis.title = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 5)),
+        axis.title.y = element_text(margin = margin(r = 5)),
+        
+        strip.text = element_text(size = 12, face = "bold"),
+        panel.spacing = unit(2, "lines")) +
+  
+  facet_wrap(~Species, ncol = 3) +
+  
+  # Manually reorder legend: Species first, Probs second
+  guides(fill  = guide_legend(order = 1),  # Species first
+         alpha = guide_legend(order = 2))  # Probs second
 
 Error_SW
 
