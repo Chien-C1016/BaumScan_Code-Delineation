@@ -155,11 +155,19 @@ performance_Pith <-
 
 saveRDS(performance_Pith, file = "performance_Pith.RData")
 
-# Descriptive stats
-mean_x <- performance_Pith$dx %>% mean()
-mean_y <- performance_Pith$dy %>% mean()
+## Descriptive Stats ----
+mean_x <- performance_Pith$dx   %>% mean()
+mean_y <- performance_Pith$dy   %>% mean()
 mean_d <- performance_Pith$dist %>% mean()
 sd_d   <- performance_Pith$dist %>% sd()
+
+# Units: mm
+# mean_x  0.088
+# mean_y  0.225
+# mean_d  0.540
+# sd_d    0.416
+
+
 sum_species <-
   performance_Pith %>% 
   dplyr::group_by(seq_disc) %>% 
@@ -170,7 +178,12 @@ sum_species <-
             sd_y = sd(dy),
             sd_d = sd(dist))
 
-# Figure
+#   seq_disc   mean_x mean_y mean_d  sd_x  sd_y  sd_d
+# 1 Larch    -0.00724 0.0853  0.553 0.402 0.549 0.301
+# 2 Pine      0.105   0.0974  0.329 0.386 0.254 0.323
+# 3 Spruce    0.166   0.492   0.739 0.704 0.395 0.553
+
+## Figure ----
 performance_Pith %>% 
   dplyr::mutate(seq_disc = factor(seq_disc, levels = Species.ID)) %>% 
   ggplot(., aes(x = dx, y = dy, color = seq_disc)) +
@@ -291,6 +304,18 @@ Error_TRW <-
 
 Error_TRW
 
+## Descriptive Stats ----
+.df_PTR %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarise(Error_mean = mean(Ring.dist),
+                   Error_sd   = sd(Ring.dist))
+
+#   Species Error_mean Error_sd
+# 1 All          0.656     1.72
+# 2 Spruce       0.936     1.61
+# 3 Pine         0.582     1.33
+# 4 Larch        0.380     2.12
+
 # ---------------------------------------------------------------------------- #
 # Performance_Sapwood ----
 #'[Performance_Sapwood:]
@@ -388,7 +413,7 @@ Error_SW <-
 Error_SW
 
 ## ' Case-02: Only display Species data ----
-#'[Size:1075*465]
+#'[Size:1075*465 (n3) | 395*1076 (n1)]
 .df_PSW <- 
   df_PSW %>% 
   dplyr::mutate(Species = factor(Species, levels = Species.ID))
@@ -442,13 +467,64 @@ Error_SW <-
 
 Error_SW
 
+Error_SW <- 
+  .df_PSW %>% 
+  ggplot(.) +
+  
+  # Density Plot
+  ggdensity::geom_hdr(aes(x = relative.position, 
+                          y = Ring.dist,
+                          fill = Species),
+                      probs = c(0.85, 0.70, 0.5, 0.20, 0.10),
+                      show.legend = c(alpha = TRUE)) +
+  
+  # Add horizontal line at the mean of y for each facet
+  geom_hline(data = .df_PSW %>%
+               dplyr::group_by(Species) %>%
+               dplyr::summarise(y_mean = mean(Ring.dist)), 
+             aes(yintercept = y_mean), 
+             color = "tomato3", linetype = "dashed") +
+  
+  # Self-define color-code
+  scale_fill_manual(values = Species.col) + 
+  
+  # Fix Y-Axis from 0 to 3
+  # scale_y_continuous(limits = c(0, 3)) +  
+  
+  theme_minimal() + 
+  labs(x = "Relative Position to Pith", 
+       y = "Absolute Error (mm)") +
+  theme(legend.position = "right",
+        legend.text  = element_text(size = 14),
+        legend.title = element_text(size = 14, face = "bold"),
+        #panel.grid.major = element_blank(),  # Remove major grid lines
+        panel.grid.minor = element_blank(),  # Remove minor grid lines
+        axis.text  = element_text(size = 14),  
+        axis.title = element_text(size = 14, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 5)),
+        axis.title.y = element_text(margin = margin(r = 5)),
+        
+        strip.text = element_text(size = 14, face = "bold")) +
+  
+  facet_wrap(~Species, ncol = 1) +
+  
+  # Manually reorder legend: Species first, Probs second
+  guides(fill  = guide_legend(order = 1),  # Species first
+         alpha = guide_legend(order = 2))  # Probs second
 
+Error_SW
 
+## Descriptive Stats ----
+.df_PSW %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarise(Error_mean = mean(Ring.dist),
+                   Error_sd   = sd(Ring.dist))
 
-
-
-
-
+#  Species  Error_mean Error_sd
+# 1 All          0.678     1.23 
+# 2 Spruce       0.675     1.14 
+# 3 Pine         0.568     0.954
+# 4 Larch        0.773     1.49 
 
 
 
